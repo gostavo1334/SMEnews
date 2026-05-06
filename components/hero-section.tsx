@@ -11,10 +11,11 @@ import {
 } from "@/components/ui/carousel"
 import { Card, CardContent } from "@/components/ui/card"
 
+import { PostWithRelations } from "@/types/prisma"
 
 interface HeroSectionProps {
-  heroNews: any[]
-  gridNews: any[]
+  heroNews: PostWithRelations[]
+  gridNews: PostWithRelations[]
 }
 
 export function HeroSection({ heroNews = [], gridNews = [] }: HeroSectionProps) {

@@ -7,7 +7,7 @@ import { NewsSectionSkeleton } from "@/components/news-section-skeleton";
 import { NewsCard } from "@/components/news-card";
 import { Play } from "lucide-react";
 import { Pagination } from "@/components/pagination";
-import { Advertisement, Post, Category, User } from "@prisma/client";
+import { Advertisement, Post, Category, User } from '@/types/prisma'
 
 export const revalidate = 60; // revalidate every minute
 

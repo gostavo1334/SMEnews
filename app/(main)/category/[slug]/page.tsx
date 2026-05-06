@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import { NewsCardSkeleton } from '@/components/news-card-skeleton'
 import { Pagination } from '@/components/pagination'
 import Image from 'next/image'
-import { Category, Advertisement, Post } from '@prisma/client'
+import { Category, Advertisement, Post } from '@/types/prisma'
 
 export const revalidate = 3600
 

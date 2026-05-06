@@ -9,14 +9,9 @@ import { getPostBySlug, getHomePageData, getAds, getPopularPosts, getPosts } fro
 import { notFound } from 'next/navigation'
 import { NewsCardSkeleton } from '@/components/news-card-skeleton'
 import { ShareDialog } from '@/components/share-dialog'
-import { Post, Category, Advertisement, User as PrismaUser } from '@prisma/client'
+import { Post, Category, Advertisement, User as PrismaUser, PostWithRelations } from '@/types/prisma'
 
 export const revalidate = 3600 // revalidate every hour
-
-type PostWithRelations = Post & {
-  category: Category | null;
-  author: PrismaUser | null;
-}
 
 export async function generateStaticParams() {
   const posts = await getPosts()

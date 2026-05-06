@@ -31,7 +31,7 @@ async function AdsPanel({ position }: { position: 'sidebar_left' | 'sidebar_righ
       {(() => {
         const sideAds = ads.filter((ad: any) => 
           ad.active && (ad.position === `${position}_1` || ad.position === `${position}_2`)
-        ).sort((a, b) => a.position.localeCompare(b.position));
+        ).sort((a: any, b: any) => a.position.localeCompare(b.position));
 
         return sideAds.length > 0 ? (
           sideAds.map((ad: any) => (

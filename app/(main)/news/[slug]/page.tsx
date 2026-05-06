@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const title = `${post.title} - SME NEWS`
-  const description = post.metaDesc || post.summary || post.content?.substring(0, 160).replace(/<[^>]*>/g, '') || 'ព័ត៌មានអាជីវកម្ម និងសេដ្ឋកិច្ច'
+  const description = post.metaDesc || post.content?.substring(0, 160).replace(/<[^>]*>/g, '') || 'ព័ត៌មានអាជីវកម្ម និងសេដ្ឋកិច្ច'
   const image = post.featuredImage || "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=80"
 
   return {
@@ -109,7 +109,7 @@ async function RelatedNews() {
     <div className="space-y-6 pt-8 border-t border-border/40">
       <h2 className="text-xl font-bold border-l-4 border-primary pl-3">អត្តបទទាក់ទង</h2>
       <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
-        {related.map((p: any) => (
+        {related.map((p: PostWithRelations) => (
           <NewsCard 
             key={p.id} 
             news={{
@@ -138,7 +138,7 @@ async function PopularNews() {
     <div className="space-y-4 sticky top-24 h-fit">
       <h2 className="text-xl font-bold border-b pb-2 mb-4">ព័ត៌មានពេញនិយម</h2>
       <div className="space-y-3">
-        {popular.map((p: any) => (
+        {popular.map((p: PostWithRelations) => (
           <NewsCard 
             key={p.id} 
             news={{

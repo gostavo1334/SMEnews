@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation'
 import { NewsCardSkeleton } from '@/components/news-card-skeleton'
 import { Pagination } from '@/components/pagination'
 import Image from 'next/image'
-import { Category, Advertisement, Post } from '@/types/prisma'
+import { Category, Advertisement, Post, PostWithRelations } from '@/types/prisma'
 
 export const revalidate = 3600
 
@@ -18,7 +18,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const categories = await getCategories()
-  const category = categories.find((c: any) => c.slug === slug)
+  const category = categories.find((c: Category) => c.slug === slug)
 
   if (!category) {
     return {
@@ -92,7 +92,7 @@ async function CategoryPostsGrid({ slug, categoryName, page }: { slug: string, c
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {posts.map((post: any) => (
+        {posts.map((post: PostWithRelations) => (
           <NewsCard 
             key={post.id} 
             news={{
@@ -125,7 +125,7 @@ async function PopularNews() {
     <div className="space-y-4 sticky top-24 h-fit">
       <h2 className="text-xl font-bold border-b pb-2 mb-4">ព័ត៌មានពេញនិយម</h2>
       <div className="space-y-3">
-        {popular.map((p: any) => (
+        {popular.map((p: PostWithRelations) => (
           <NewsCard 
             key={p.id} 
             news={{

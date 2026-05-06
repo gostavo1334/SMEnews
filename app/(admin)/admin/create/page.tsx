@@ -271,7 +271,7 @@ export default function CreatePostPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {dbAuthors.length > 0 ? (
-                      dbAuthors.map(author => (
+                      dbAuthors.map((author: any) => (
                         <SelectItem key={author.id} value={author.id.toString()}>{author.name || 'Anonymous'}</SelectItem>
                       ))
                     ) : (
@@ -294,7 +294,7 @@ export default function CreatePostPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {dbCategories.length > 0 ? (
-                      dbCategories.map(cat => (
+                      dbCategories.map((cat: any) => (
                         <SelectItem key={cat.id} value={cat.id.toString()}>{cat.name}</SelectItem>
                       ))
                     ) : (

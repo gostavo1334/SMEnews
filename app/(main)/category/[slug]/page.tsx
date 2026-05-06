@@ -48,7 +48,7 @@ async function AdsPanel({ position }: { position: 'sidebar_left' | 'sidebar_righ
 
 export async function generateStaticParams() {
   const categories = await getCategories()
-  return categories.map((cat) => ({
+  return categories.map((cat: any) => ({
     slug: cat.slug,
   }))
 }
@@ -67,7 +67,7 @@ async function CategoryPostsGrid({ slug, categoryName, page }: { slug: string, c
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {posts.map((post) => (
+        {posts.map((post: any) => (
           <NewsCard 
             key={post.id} 
             news={{
@@ -100,7 +100,7 @@ async function PopularNews() {
     <div className="space-y-4 sticky top-24 h-fit">
       <h2 className="text-xl font-bold border-b pb-2 mb-4">ព័ត៌មានពេញនិយម</h2>
       <div className="space-y-3">
-        {popular.map((p) => (
+        {popular.map((p: any) => (
           <NewsCard 
             key={p.id} 
             news={{

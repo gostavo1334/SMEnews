@@ -113,7 +113,7 @@ export default function PostListsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {posts.map((post) => (
+                {posts.map((post: any) => (
                   <TableRow key={post.id}>
                     <TableCell className="font-mono text-xs text-muted-foreground">{post.id}</TableCell>
                     <TableCell className="font-medium max-w-[400px] truncate">{post.title}</TableCell>

@@ -104,7 +104,7 @@ async function PopularNewsSidebar() {
       <div>
         <h2 className="text-xl font-bold border-b pb-2 mb-4">ព័ត៌មានពេញនិយម</h2>
         <div className="space-y-3">
-          {popularPosts.map((post) => (
+          {popularPosts.map((post: any) => (
             <NewsCard
               key={post.id}
               news={{
@@ -157,7 +157,7 @@ async function MainContent({ page }: { page: number }) {
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {latestPosts.map((post) => (
+            {latestPosts.map((post: any) => (
               <NewsCard
                 key={post.id}
                 news={{

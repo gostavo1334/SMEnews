@@ -14,7 +14,7 @@ export const revalidate = 3600 // revalidate every hour
 
 export async function generateStaticParams() {
   const posts = await getPosts()
-  return posts.slice(0, 20).map((post) => ({
+  return posts.slice(0, 20).map((post: any) => ({
     slug: post.slug,
   }))
 }
@@ -65,7 +65,7 @@ async function RelatedNews() {
     <div className="space-y-6 pt-8 border-t border-border/40">
       <h2 className="text-xl font-bold border-l-4 border-primary pl-3">អត្តបទទាក់ទង</h2>
       <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
-        {related.map((p) => (
+        {related.map((p: any) => (
           <NewsCard 
             key={p.id} 
             news={{
@@ -94,7 +94,7 @@ async function PopularNews() {
     <div className="space-y-4 sticky top-24 h-fit">
       <h2 className="text-xl font-bold border-b pb-2 mb-4">ព័ត៌មានពេញនិយម</h2>
       <div className="space-y-3">
-        {popular.map((p) => (
+        {popular.map((p: any) => (
           <NewsCard 
             key={p.id} 
             news={{

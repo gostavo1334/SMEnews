@@ -41,7 +41,16 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
-const posts = [
+interface StaticPost {
+  id: string;
+  title: string;
+  category: string;
+  date: string;
+  author: string;
+  avatar: string;
+}
+
+const posts: StaticPost[] = [
   { id: '5735', title: 'ក្រសួងពាណិជ្ជកម្មបង្ហាញពីវឌ្ឍនភាព...', category: 'ពាណិជ្ជកម្ម', date: '2026-05-04', author: 'ទូច សូរិយា', avatar: 'https://i.pravatar.cc/150?u=touch' },
   { id: '5734', title: 'រដ្ឋមន្រ្តីពាណិជ្ជកម្មជួបពិភាក្សា...', category: 'ពាណិជ្ជកម្ម', date: '2026-05-02', author: 'ទូច សូរិយា', avatar: 'https://i.pravatar.cc/150?u=touch' },
   { id: '5733', title: 'JICA ប្តេជ្ញាបន្តគាំទ្រការអភិវឌ្ឍ...', category: 'សង្គមជាតិ-សេដ្ឋកិច្ច', date: '2026-05-02', author: 'ទូច សូរិយា', avatar: 'https://i.pravatar.cc/150?u=touch' },
@@ -113,7 +122,7 @@ export default function PostListsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {posts.map((post: any) => (
+                {posts.map((post: StaticPost) => (
                   <TableRow key={post.id}>
                     <TableCell className="font-mono text-xs text-muted-foreground">{post.id}</TableCell>
                     <TableCell className="font-medium max-w-[400px] truncate">{post.title}</TableCell>

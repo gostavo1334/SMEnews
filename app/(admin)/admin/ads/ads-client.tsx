@@ -30,7 +30,7 @@ interface Ad {
   createdAt: Date
 }
 
-export default function AdsPage({ initialAds = [] }: { initialAds: any[] }) {
+export default function AdsPage({ initialAds = [] }: { initialAds: Ad[] }) {
   const [ads, setAds] = useState<Ad[]>(initialAds)
   const [isPending, startTransition] = useTransition()
   const [isUploading, setIsUploading] = useState(false)

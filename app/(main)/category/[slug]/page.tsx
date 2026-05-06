@@ -5,11 +5,13 @@ import { notFound } from 'next/navigation'
 import { NewsCardSkeleton } from '@/components/news-card-skeleton'
 import { Pagination } from '@/components/pagination'
 import Image from 'next/image'
+import { Category, Advertisement, Post } from '@prisma/client'
 
 export const revalidate = 3600
 
 interface PageProps {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ page?: string }>
 }
 
 async function AdsPanel({ position }: { position: 'sidebar_left' | 'sidebar_right' }) {
@@ -18,12 +20,12 @@ async function AdsPanel({ position }: { position: 'sidebar_left' | 'sidebar_righ
   return (
     <div className="hidden xl:flex w-[160px] flex-shrink-0 flex-col gap-4 sticky top-24 h-fit">
       {(() => {
-        const sideAds = ads.filter((ad: any) => 
+        const sideAds = ads.filter((ad: Advertisement) => 
           ad.active && (ad.position === `${position}_1` || ad.position === `${position}_2`)
-        ).sort((a: any, b: any) => a.position.localeCompare(b.position));
+        ).sort((a: Advertisement, b: Advertisement) => a.position.localeCompare(b.position));
 
         return sideAds.length > 0 ? (
-          sideAds.map((ad: any) => (
+          sideAds.map((ad: Advertisement) => (
             <a key={ad.id} href={ad.linkUrl || "#"} target="_blank" rel="noreferrer" className="block w-full">
               <div className="relative w-full h-[475px] rounded-md overflow-hidden border border-border/40 shadow-sm transition-transform hover:scale-[1.02]">
                 <Image 
@@ -48,7 +50,7 @@ async function AdsPanel({ position }: { position: 'sidebar_left' | 'sidebar_righ
 
 export async function generateStaticParams() {
   const categories = await getCategories()
-  return categories.map((cat: any) => ({
+  return categories.map((cat: Category) => ({
     slug: cat.slug,
   }))
 }
@@ -126,7 +128,7 @@ async function PopularNews() {
 
 async function AdAfterPopular() {
   const ads = await getAds()
-  const ad = ads.find((ad: any) => ad.active && ad.position === 'after_popular')
+  const ad = ads.find((ad: Advertisement) => ad.active && ad.position === 'after_popular')
   
   if (!ad) return (
     <div className="w-full aspect-[2200/2200] bg-muted rounded-md flex items-center justify-center border border-dashed border-muted-foreground/20 mt-4">
@@ -149,15 +151,12 @@ async function AdAfterPopular() {
   )
 }
 
-export default async function CategoryPage({ params, searchParams }: { 
-  params: Promise<{ slug: string }>,
-  searchParams: Promise<{ page?: string }>
-}) {
+export default async function CategoryPage({ params, searchParams }: PageProps) {
   const { slug } = await params
   const { page: pageStr } = await searchParams
   const page = parseInt(pageStr || "1")
   const categories = await getCategories()
-  const category = categories.find(c => c.slug === slug)
+  const category = categories.find((c: Category) => c.slug === slug)
 
   if (!category) {
     notFound()

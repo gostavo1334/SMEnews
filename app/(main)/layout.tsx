@@ -13,10 +13,11 @@ export default async function MainLayout({
   ]);
   
   const topBannerAd = ads.find(ad => ad.active && ad.position === 'top_banner');
+  const sponsorAds = ads.filter(ad => ad.active && ad.position === 'sponsor_cube');
 
   return (
     <>
-      <SiteHeader topBannerAd={topBannerAd} categories={categories} />
+      <SiteHeader topBannerAd={topBannerAd} sponsorAds={sponsorAds} categories={categories} />
       <main className="flex-grow">
         {children}
       </main>

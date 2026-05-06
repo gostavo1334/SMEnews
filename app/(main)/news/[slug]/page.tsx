@@ -8,6 +8,7 @@ import { NewsCard } from "@/components/news-card"
 import { getPostBySlug, getHomePageData, getAds, getPopularPosts, getPosts } from '@/app/actions/post-actions'
 import { notFound } from 'next/navigation'
 import { NewsCardSkeleton } from '@/components/news-card-skeleton'
+import { ShareDialog } from '@/components/share-dialog'
 
 export const revalidate = 3600 // revalidate every hour
 
@@ -72,6 +73,7 @@ async function RelatedNews() {
               slug: p.slug,
               title: p.title,
               category: p.category?.name || "General",
+              categorySlug: p.category?.slug,
               date: new Date(p.createdAt).toLocaleDateString('km-KH'),
               image: p.featuredImage || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=400&q=80",
               summary: p.metaDesc ?? undefined
@@ -89,7 +91,7 @@ async function PopularNews() {
   const popular = await getPopularPosts()
   
   return (
-    <div className="space-y-4 sticky top-24">
+    <div className="space-y-4 sticky top-24 h-fit">
       <h2 className="text-xl font-bold border-b pb-2 mb-4">ព័ត៌មានពេញនិយម</h2>
       <div className="space-y-3">
         {popular.map((p) => (
@@ -100,6 +102,7 @@ async function PopularNews() {
               slug: p.slug,
               title: p.title,
               category: p.category?.name || "General",
+              categorySlug: p.category?.slug,
               date: new Date(p.createdAt).toLocaleDateString('km-KH'),
               image: p.featuredImage || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=400&q=80",
               summary: p.metaDesc ?? undefined
@@ -224,7 +227,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="size-8 rounded-full"><Share2 className="size-4" /></Button>
+                    <ShareDialog title={post.title} />
                     <Button variant="ghost" size="icon" className="size-8 rounded-full"><Bookmark className="size-4" /></Button>
                   </div>
                 </div>

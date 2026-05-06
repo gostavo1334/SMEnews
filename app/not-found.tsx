@@ -18,6 +18,9 @@ export default function NotFound() {
         <ArrowLeft className="size-4" />
         ត្រលប់ទៅទំព័រដើម
       </Link>
+      <style>{`
+        #site-header-top, #site-header-nav, #site-footer { display: none !important; }
+      `}</style>
     </div>
   )
 }

@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Clock, User } from 'lucide-react'
 import { Card } from '@/components/ui/card'
@@ -11,6 +14,7 @@ interface NewsCardProps {
     slug?: string
     title: string
     category: string
+    categorySlug?: string
     date: string
     image: string
     author?: {
@@ -24,6 +28,7 @@ interface NewsCardProps {
 }
 
 export function NewsCard({ news, variant = 'large', className }: NewsCardProps) {
+  const router = useRouter()
   const newsHref = `/news/${news.slug || news.id}`
 
   if (variant === 'horizontal' || variant === 'small') {
@@ -41,7 +46,13 @@ export function NewsCard({ news, variant = 'large', className }: NewsCardProps) 
               />
             </div>
             <div className="space-y-1 overflow-hidden">
-              <Badge className="bg-primary hover:bg-primary text-white border-none text-[9px] px-1.5 py-0 h-4 rounded-sm">
+              <Badge 
+                onClick={(e) => {
+                  e.preventDefault()
+                  if (news.categorySlug) router.push(`/category/${news.categorySlug}`)
+                }}
+                className="bg-primary hover:bg-primary/90 text-white border-none text-[9px] px-1.5 py-0 h-4 rounded-sm relative z-10 cursor-pointer"
+              >
                 {news.category}
               </Badge>
               <h4 className="text-sm font-medium leading-snug group-hover:text-primary transition-colors line-clamp-2">
@@ -80,7 +91,13 @@ export function NewsCard({ news, variant = 'large', className }: NewsCardProps) 
         </div>
         <div className="p-3 flex flex-col flex-grow">
           <div className="flex items-center flex-wrap gap-2 mb-2">
-            <Badge className="bg-primary hover:bg-primary text-white border-none px-2 py-0 text-[10px] rounded-sm">
+            <Badge 
+              onClick={(e) => {
+                e.preventDefault()
+                if (news.categorySlug) router.push(`/category/${news.categorySlug}`)
+              }}
+              className="bg-primary hover:bg-primary/90 text-white border-none px-2 py-0 text-[10px] rounded-sm relative z-10 cursor-pointer"
+            >
               {news.category}
             </Badge>
             <div className="flex items-center gap-1 text-[10px] text-muted-foreground">

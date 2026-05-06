@@ -100,7 +100,7 @@ async function AdAfterPopular() {
 async function PopularNewsSidebar() {
   const popularPosts = await getPopularPosts();
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 sticky top-24 h-fit">
       <div>
         <h2 className="text-xl font-bold border-b pb-2 mb-4">ព័ត៌មានពេញនិយម</h2>
         <div className="space-y-3">
@@ -112,6 +112,7 @@ async function PopularNewsSidebar() {
                 slug: post.slug,
                 title: post.title,
                 category: post.category?.name || "General",
+                categorySlug: post.category?.slug,
                 date: new Date(post.createdAt).toLocaleDateString('km-KH'),
                 image: post.featuredImage || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=400&q=80",
                 author: { name: post.author?.name || "អ្នកយកព័ត៌មាន", avatar: post.author?.image || "/avatars/default.jpg" }
@@ -164,6 +165,7 @@ async function MainContent({ page }: { page: number }) {
                   slug: post.slug,
                   title: post.title,
                   category: post.category?.name || "General",
+                  categorySlug: post.category?.slug,
                   date: new Date(post.createdAt).toLocaleDateString('km-KH'),
                   image: post.featuredImage || "https://images.unsplash.com/photo-1540959733332-e94e270b2d42?w=800&q=80",
                   author: { name: post.author?.name || "Anonymous", avatar: post.author?.image || "/avatars/default.jpg" },

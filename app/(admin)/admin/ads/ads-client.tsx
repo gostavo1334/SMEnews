@@ -45,6 +45,7 @@ export default function AdsPage({ initialAds = [] }: { initialAds: any[] }) {
     { value: 'after_popular', label: 'After Popular News (2480x2150)' },
     { value: 'after_article', label: 'After News Content (1920x200)' },
     { value: 'top_banner', label: 'Top Header GIF (600x100)' },
+    { value: 'sponsor_cube', label: 'Top Header Sponsor Cube (80x80)' },
   ]
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {

@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { ModeToggle } from "@/components/mode-toggle"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { 
   Sheet, 
@@ -25,6 +24,7 @@ import {
   SheetTitle, 
   SheetTrigger 
 } from "@/components/ui/sheet"
+import { SponsorCube } from "@/components/sponsor-cube"
 
 const navItems = [
   { title: "ទំព័រដើម", href: "/" },
@@ -46,7 +46,7 @@ const navItems = [
   { title: "ទាញយកឯកសារ", href: "/downloads" },
 ]
 
-export function SiteHeader({ topBannerAd, categories = [] }: { topBannerAd?: any, categories?: any[] }) {
+export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { topBannerAd?: any, sponsorAds?: any[], categories?: any[] }) {
   const dynamicNavItems = [
     { title: "ទំព័រដើម", href: "/" },
     ...categories
@@ -62,8 +62,8 @@ export function SiteHeader({ topBannerAd, categories = [] }: { topBannerAd?: any
   return (
     <>
       {/* TOP BAR STONE */}
-      <div className="w-full border-b border-border/10 bg-background/50">
-        <div className="w-full px-6 py-6 flex items-center justify-between gap-8">
+      <div id="site-header-top" className="w-full border-b border-border/10 bg-background/50">
+        <div className="w-full px-6 py-2 flex items-center justify-between gap-8">
           <div className="flex-shrink-0">
             <Link href="/">
               <div className="flex items-center gap-2">
@@ -99,21 +99,13 @@ export function SiteHeader({ topBannerAd, categories = [] }: { topBannerAd?: any
  
           {/* SPONSOR RIGHT */}
           <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
-            <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center border overflow-hidden shadow-sm">
-               <Image 
-                src="https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=80&q=80" 
-                alt="Sponsor" 
-                width={56} 
-                height={56}
-                className="object-cover"
-              />
-            </div>
+            <SponsorCube ads={sponsorAds} />
           </div>
         </div>
       </div>
 
       {/* NAV BAR STONE (STICKY) */}
-      <div className="sticky top-0 z-50 border-y border-primary/20 bg-primary shadow-sm">
+      <div id="site-header-nav" className="sticky top-0 z-50 border-y border-primary/20 bg-primary shadow-sm">
         <div className="container mx-auto px-4 flex items-center justify-between md:justify-center gap-6 py-1">
           
           {/* MOBILE MENU TRIGGER */}
@@ -172,7 +164,6 @@ export function SiteHeader({ topBannerAd, categories = [] }: { topBannerAd?: any
                 className="pl-8 h-8 w-[150px] text-xs bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:w-[200px] focus:bg-white/20 transition-all"
               />
             </div>
-            <ModeToggle />
           </div>
         </div>
       </div>

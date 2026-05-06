@@ -75,6 +75,7 @@ async function CategoryPostsGrid({ slug, categoryName, page }: { slug: string, c
               slug: post.slug,
               title: post.title,
               category: categoryName,
+              categorySlug: slug,
               date: new Date(post.createdAt).toLocaleDateString('km-KH'),
               image: post.featuredImage || "https://images.unsplash.com/photo-1540959733332-e94e270b2d42?w=800&q=80",
               summary: post.metaDesc ?? undefined
@@ -96,7 +97,7 @@ async function PopularNews() {
   const popular = await getPopularPosts()
   
   return (
-    <div className="space-y-4 sticky top-24">
+    <div className="space-y-4 sticky top-24 h-fit">
       <h2 className="text-xl font-bold border-b pb-2 mb-4">ព័ត៌មានពេញនិយម</h2>
       <div className="space-y-3">
         {popular.map((p) => (
@@ -107,6 +108,7 @@ async function PopularNews() {
               slug: p.slug,
               title: p.title,
               category: p.category?.name || "General",
+              categorySlug: p.category?.slug,
               date: new Date(p.createdAt).toLocaleDateString('km-KH'),
               image: p.featuredImage || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=400&q=80"
             }} 

@@ -4,7 +4,7 @@ import React from 'react'
 import { 
   ArrowLeft, 
   Upload, 
-  Globe, 
+  Globe,
   MessageCircle, 
   Camera, 
   Share2, 
@@ -14,8 +14,6 @@ import {
   X
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const CKEditor = dynamic(() => import('@ckeditor/ckeditor5-react').then(mod => mod.CKEditor), { ssr: false })
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -32,29 +30,14 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
+import { createPost, getCategories, getAuthors } from '@/app/actions/post-actions'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
-class MyUploadAdapter {
-  loader: any;
-  constructor(loader: any) {
-    this.loader = loader;
-  }
-  upload() {
-    return this.loader.file.then((file: File) => new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve({ default: reader.result });
-      reader.onerror = error => reject(error);
-      reader.readAsDataURL(file);
-    }));
-  }
-  abort() {}
-}
-
-function MyCustomUploadAdapterPlugin(editor: any) {
-  editor.plugins.get('FileRepository').createUploadAdapter = (loader: any) => {
-    return new MyUploadAdapter(loader);
-  };
-}
+const EditorWrapper = dynamic(() => import('@/components/admin/editor-wrapper'), { 
+  ssr: false,
+  loading: () => <div className="h-[400px] w-full bg-muted animate-pulse rounded-md flex items-center justify-center">កំពុងផ្ទុកកម្មវិធីសរសេរអត្ថបទ...</div>
+})
 
 export default function CreatePostPage() {
   const [postDate, setPostDate] = React.useState<Date | undefined>(new Date())
@@ -62,30 +45,31 @@ export default function CreatePostPage() {
   const [tagInput, setTagInput] = React.useState('')
   const [content, setContent] = React.useState('')
   const [title, setTitle] = React.useState('')
-  const [slug, setSlug] = React.useState('')
+  const [slug] = React.useState(() => Math.random().toString(36).substring(2, 10))
   const [metaDesc, setMetaDesc] = React.useState('')
   const [seoTitle, setSeoTitle] = React.useState('')
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [dbCategories, setDbCategories] = React.useState<{id: number, name: string}[]>([])
+  const [dbAuthors, setDbAuthors] = React.useState<{id: number, name: string | null}[]>([])
+  const [selectedCategory, setSelectedCategory] = React.useState('')
+  const [selectedAuthor, setSelectedAuthor] = React.useState('')
+  const [featuredImage, setFeaturedImage] = React.useState<File | null>(null)
+  
+  const router = useRouter()
+
+  React.useEffect(() => {
+    getCategories().then(setDbCategories)
+    getAuthors().then(setDbAuthors)
+  }, [])
 
   const stripHtml = (html: string) => {
-    if (typeof window === 'undefined') return ""
-    const tmp = document.createElement("DIV")
-    tmp.innerHTML = html
-    return tmp.textContent || tmp.innerText || ""
+    return html.replace(/<[^>]*>?/gm, '')
   }
 
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '') // Remove non-word chars
-      .replace(/\s+/g, '-') // Replace spaces with -
-      .replace(/--+/g, '-') // Replace multiple - with single -
-      .trim()
-  }
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value
     setTitle(newTitle)
-    setSlug(generateSlug(newTitle))
     if (!seoTitle || seoTitle === title) {
       setSeoTitle(newTitle)
     }
@@ -105,6 +89,41 @@ export default function CreatePostPage() {
     setTags(tags.filter(tag => tag !== tagToRemove))
   }
 
+  const handleSubmit = async () => {
+    if (!title || !content) {
+      toast.error('សូមបញ្ចូលចំណងជើង និងខ្លឹមសារ!')
+      return
+    }
+
+    if (!selectedAuthor) {
+      toast.error('សូមជ្រើសរើសអ្នកនិពន្ធ!')
+      return
+    }
+
+    setIsSubmitting(true)
+    const formData = new FormData()
+    formData.append('title', title)
+    formData.append('slug', slug)
+    formData.append('content', content)
+    formData.append('seoTitle', seoTitle)
+    formData.append('metaDesc', metaDesc)
+    if (selectedCategory) formData.append('categoryId', selectedCategory)
+    if (selectedAuthor) formData.append('authorId', selectedAuthor)
+    if (featuredImage) formData.append('featuredImage', featuredImage)
+    formData.append('published', 'true')
+
+    try {
+      await createPost(formData)
+      toast.success('អត្ថបទត្រូវបានរក្សាទុកដោយជោគជ័យ!')
+      router.push('/admin/posts')
+    } catch (error) {
+      console.error(error)
+      toast.error('មានបញ្ហាក្នុងការរក្សាទុក! (FK Error or UUID issues)')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <div className="p-6 md:p-8 space-y-6 max-w-[1200px]">
       
@@ -122,12 +141,12 @@ export default function CreatePostPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" disabled={isSubmitting}>
             រក្សាទុកព្រាង
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={handleSubmit} disabled={isSubmitting}>
             <Save className="size-4 mr-2" />
-            បោះពុម្ពផ្សាយ
+            {isSubmitting ? 'កំពុងរក្សាទុក...' : 'បោះពុម្ពផ្សាយ'}
           </Button>
         </div>
       </div>
@@ -153,46 +172,18 @@ export default function CreatePostPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="slug">ស្លាកតំណភ្ជាប់ (Permalink / Slug)</Label>
-                <div className="flex items-center">
-                  <div className="bg-muted px-3 h-9 flex items-center border border-r-0 rounded-l-md text-xs text-muted-foreground">
-                    smenews.com.kh/news/
-                  </div>
-                  <Input 
-                    id="slug" 
-                    value={slug} 
-                    onChange={(e) => setSlug(e.target.value)}
-                    className="rounded-l-none h-9 text-xs" 
-                  />
-                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="content">ខ្លឹមសារអត្ថបទ (Post Content)</Label>
-                <div className="min-h-[400px] prose prose-sm dark:prose-invert max-w-none">
-                  <CKEditor
-                    editor={ClassicEditor}
-                    data={content}
-                    onChange={(_event, editor) => {
-                      const data = editor.getData()
-                      setContent(data)
-                      // Auto-generate meta description if empty
-                      if (!metaDesc || metaDesc.length < 5) {
-                        const plainText = stripHtml(data)
-                        setMetaDesc(plainText.substring(0, 160))
-                      }
-                    }}
-                    config={{
-                      placeholder: 'សរសេរខ្លឹមសារអត្ថបទរបស់អ្នកនៅទីនេះ...',
-                      extraPlugins: [MyCustomUploadAdapterPlugin],
-                      toolbar: [
-                        'heading', '|', 
-                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 
-                        'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', '|', 
-                        'undo', 'redo'
-                      ],
-                    }}
-                  />
-                </div>
+                <EditorWrapper 
+                  data={content} 
+                  onChange={(data) => {
+                    setContent(data)
+                    if (!metaDesc || metaDesc.length < 5) {
+                      setMetaDesc(stripHtml(data).substring(0, 160))
+                    }
+                  }} 
+                />
               </div>
             </CardContent>
           </Card>
@@ -202,16 +193,35 @@ export default function CreatePostPage() {
               <CardTitle>រូបភាពតំណាង (Featured Image)</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-12 flex flex-col items-center justify-center text-center hover:bg-muted/30 transition-colors cursor-pointer group">
-                <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Upload className="size-8 text-primary" />
+                <div className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-12 flex flex-col items-center justify-center text-center hover:bg-muted/30 transition-colors cursor-pointer group relative">
+                  {featuredImage ? (
+                    <div className="flex flex-col items-center">
+                      <ImageIcon className="size-16 text-primary mb-2" />
+                      <p className="text-sm font-medium">{featuredImage.name}</p>
+                      <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={(e) => {
+                        e.stopPropagation()
+                        setFeaturedImage(null)
+                      }}>លុបចេញ</Button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <Upload className="size-8 text-primary" />
+                      </div>
+                      <h3 className="font-medium text-lg mb-1">ទម្លាក់រូបភាពនៅទីនេះ ឬ ចុចដើម្បីជ្រើសរើស</h3>
+                      <p className="text-sm text-muted-foreground mb-4">រូបភាពគួរតែជាប្រភេទ JPG, PNG ឬ WEBP (អតិបរមា 5MB)</p>
+                    </>
+                  )}
+                  <input 
+                    type="file" 
+                    className="absolute inset-0 opacity-0 cursor-pointer" 
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) setFeaturedImage(file)
+                    }}
+                    accept="image/*"
+                  />
                 </div>
-                <h3 className="font-medium text-lg mb-1">ទម្លាក់រូបភាពនៅទីនេះ ឬ ចុចដើម្បីជ្រើសរើស</h3>
-                <p className="text-sm text-muted-foreground mb-4">រូបភាពគួរតែជាប្រភេទ JPG, PNG ឬ WEBP (អតិបរមា 5MB)</p>
-                <Button variant="outline" size="sm">
-                  ជ្រើសរើសឯកសារ
-                </Button>
-              </div>
             </CardContent>
           </Card>
 
@@ -255,14 +265,18 @@ export default function CreatePostPage() {
             <CardContent className="space-y-5">
               <div className="space-y-2">
                 <Label>អ្នកនិពន្ធ (Author)</Label>
-                <Select>
+                <Select value={selectedAuthor} onValueChange={setSelectedAuthor}>
                   <SelectTrigger>
                     <SelectValue placeholder="ជ្រើសរើសអ្នកនិពន្ធ" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="chan">ចាន់ ធីតា</SelectItem>
-                    <SelectItem value="suy">ស៊ុយ ហេង</SelectItem>
-                    <SelectItem value="ly">លី ហួរ</SelectItem>
+                    {dbAuthors.length > 0 ? (
+                      dbAuthors.map(author => (
+                        <SelectItem key={author.id} value={author.id.toString()}>{author.name || 'Anonymous'}</SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="none" disabled>កំពុងផ្ទុកអ្នកនិពន្ធ...</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -274,15 +288,18 @@ export default function CreatePostPage() {
 
               <div className="space-y-2">
                 <Label>ប្រភេទអត្ថបទ (Category)</Label>
-                <Select>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                   <SelectTrigger>
                     <SelectValue placeholder="ជ្រើសរើសប្រភេទ" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="tech">បច្ចេកវិទ្យា</SelectItem>
-                    <SelectItem value="business">អាជីវកម្ម</SelectItem>
-                    <SelectItem value="economy">សេដ្ឋកិច្ច</SelectItem>
-                    <SelectItem value="agriculture">កសិកម្ម</SelectItem>
+                    {dbCategories.length > 0 ? (
+                      dbCategories.map(cat => (
+                        <SelectItem key={cat.id} value={cat.id.toString()}>{cat.name}</SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="none" disabled>កំពុងផ្ទុកប្រភេទ...</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>

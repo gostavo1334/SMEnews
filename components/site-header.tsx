@@ -15,9 +15,9 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ModeToggle } from "@/components/mode-toggle"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { 
   Sheet, 
   SheetContent, 
@@ -46,43 +46,68 @@ const navItems = [
   { title: "ទាញយកឯកសារ", href: "/downloads" },
 ]
 
-export function SiteHeader() {
+export function SiteHeader({ topBannerAd, categories = [] }: { topBannerAd?: any, categories?: any[] }) {
+  const dynamicNavItems = [
+    { title: "ទំព័រដើម", href: "/" },
+    ...categories
+      .filter(cat => cat.name !== "វីដេអូ" && cat.name !== "ទំព័រដើម")
+      .map(cat => ({
+        title: cat.name,
+        href: `/category/${cat.slug}`
+      })),
+    { title: "វីដេអូ", href: "/video" },
+    { title: "ទាញយកឯកសារ", href: "/downloads" },
+  ]
+
   return (
     <>
       {/* TOP BAR STONE */}
-      <div className="w-full px-6 md:px-12 py-4 flex items-center justify-between gap-4">
-        <div className="flex-shrink-0">
-          <Link href="/">
-            <div className="flex items-center gap-2">
-              <Image 
-                src="/Logo/logo.png" 
-                alt="SME NEWS" 
-                width={300} 
-                height={80} 
-                className="h-16 md:h-20 w-auto object-contain"
-                priority
+      <div className="w-full border-b border-border/10 bg-background/50">
+        <div className="w-full px-6 py-6 flex items-center justify-between gap-8">
+          <div className="flex-shrink-0">
+            <Link href="/">
+              <div className="flex items-center gap-2">
+                <Image 
+                  src="/Logo/logo.png" 
+                  alt="SME NEWS" 
+                  width={320} 
+                  height={100} 
+                  className="h-16 md:h-24 w-auto object-contain"
+                  priority
+                />
+              </div>
+            </Link>
+          </div>
+ 
+          {/* ADS PANEL MIDDLE */}
+          <div className="flex-grow hidden lg:flex justify-center">
+            {topBannerAd ? (
+              <a 
+                href={topBannerAd.linkUrl || "#"} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="w-full max-w-[900px] h-20 md:h-28 relative rounded overflow-hidden border border-border shadow-sm transition-transform hover:scale-[1.01]"
+              >
+                <Image src={topBannerAd.imageUrl} alt={topBannerAd.title} fill className="object-cover" unoptimized />
+              </a>
+            ) : (
+              <div className="w-full max-w-[900px] h-20 md:h-28 bg-muted rounded flex items-center justify-center border border-dashed border-muted-foreground/30 relative cursor-pointer hover:bg-muted/80 transition-colors">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Advertisement Space</span>
+              </div>
+            )}
+          </div>
+ 
+          {/* SPONSOR RIGHT */}
+          <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
+            <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center border overflow-hidden shadow-sm">
+               <Image 
+                src="https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=80&q=80" 
+                alt="Sponsor" 
+                width={56} 
+                height={56}
+                className="object-cover"
               />
             </div>
-          </Link>
-        </div>
-
-        {/* ADS PANEL MIDDLE */}
-        <div className="flex-grow hidden lg:flex justify-center">
-          <div className="w-full max-w-[728px] h-20 bg-muted rounded flex items-center justify-center border border-dashed border-muted-foreground/30 relative cursor-pointer hover:bg-muted/80 transition-colors">
-            <span className="text-xs text-muted-foreground uppercase tracking-widest">Advertisement Space</span>
-          </div>
-        </div>
-
-        {/* SPONSOR RIGHT */}
-        <div className="hidden sm:flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center border overflow-hidden">
-             <Image 
-              src="https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=50&q=80" 
-              alt="Sponsor" 
-              width={40} 
-              height={40}
-              className="object-cover"
-            />
           </div>
         </div>
       </div>
@@ -94,37 +119,26 @@ export function SiteHeader() {
           {/* MOBILE MENU TRIGGER */}
           <div className="md:hidden flex items-center">
             <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="size-9 text-white hover:bg-white/10">
-                  <Menu className="size-5" />
-                </Button>
-              </SheetTrigger>
+              <SheetTrigger
+                render={
+                  <button className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "size-9 text-white hover:bg-white/10")}>
+                    <Menu className="size-5" />
+                  </button>
+                }
+              />
               <SheetContent side="left" className="w-[300px] sm:w-[400px] KhmerOS">
                 <SheetHeader className="text-left border-b pb-4 mb-4">
                   <SheetTitle className="text-primary font-bold">ប្រភេទព័ត៌មាន</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-100px)]">
-                  {navItems.map((item) => (
-                    <div key={item.title} className="flex flex-col">
+                  {dynamicNavItems.map((item) => (
+                    <div key={item.href} className="flex flex-col">
                       <Link 
                         href={item.href} 
                         className="px-4 py-2 text-sm font-medium hover:bg-accent rounded-md transition-colors"
                       >
                         {item.title}
                       </Link>
-                      {item.items && (
-                        <div className="pl-6 flex flex-col border-l border-border/40 ml-4 gap-1 mt-1">
-                          {item.items.map((sub) => (
-                            <Link 
-                              key={sub.title} 
-                              href={sub.href}
-                              className="px-3 py-1.5 text-[13px] text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              {sub.title}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
@@ -135,35 +149,14 @@ export function SiteHeader() {
           {/* DESKTOP MENU - HIDDEN ON MOBILE */}
           <NavigationMenu className="hidden md:flex max-w-fit justify-start">
             <NavigationMenuList className="flex-wrap">
-              {navItems.map((item) => (
-                <NavigationMenuItem key={item.title}>
-                  {item.items ? (
-                    <>
-                      <NavigationMenuTrigger className="text-[14px] font-medium !bg-transparent text-primary-foreground !hover:bg-white/10 hover:text-white data-[state=open]:!bg-white/10 data-[popup-open]:!bg-white/10">
-                        {item.title}
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        <ul className="grid w-[400px] gap-1 p-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                          {item.items.map((subItem) => (
-                            <ListItem
-                              key={subItem.title}
-                              title={subItem.title}
-                              href={subItem.href}
-                            >
-                              {subItem.description}
-                            </ListItem>
-                          ))}
-                        </ul>
-                      </NavigationMenuContent>
-                    </>
-                  ) : (
-                    <Link 
-                      href={item.href} 
-                      className={cn(navigationMenuTriggerStyle(), "text-[14px] font-medium KhmerOS !bg-transparent text-primary-foreground !hover:bg-white/10 hover:text-white")}
-                    >
-                      {item.title}
-                    </Link>
-                  )}
+              {dynamicNavItems.map((item) => (
+                <NavigationMenuItem key={item.href}>
+                  <Link 
+                    href={item.href} 
+                    className={cn(navigationMenuTriggerStyle(), "text-[14px] font-medium KhmerOS !bg-transparent text-primary-foreground !hover:bg-white/10 hover:text-white")}
+                  >
+                    {item.title}
+                  </Link>
                 </NavigationMenuItem>
               ))}
             </NavigationMenuList>
@@ -195,14 +188,13 @@ function ListItem({
   ...props
 }: React.ComponentPropsWithoutRef<"li"> & { href: string; title: string }) {
   return (
-    <li>
+    <li {...props}>
       <Link
         href={href}
         className={cn(
           "block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
           className
         )}
-        {...props}
       >
         <div className="text-sm font-medium leading-none">{title}</div>
         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">

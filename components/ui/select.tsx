@@ -6,7 +6,7 @@ import { CheckIcon, ChevronDownIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-function Select({ ...props }: SelectPrimitive.Root.Props) {
+function Select({ ...props }: SelectPrimitive.Root.Props<any>) {
   return <SelectPrimitive.Root data-slot="select" {...props} />
 }
 
@@ -25,9 +25,9 @@ function SelectTrigger({
       {...props}
     >
       {children}
-      <SelectPrimitive.Icon asChild>
+      <SelectPrimitive.Icon render={
         <ChevronDownIcon className="size-4 opacity-50" />
-      </SelectPrimitive.Icon>
+      } />
     </SelectPrimitive.Trigger>
   )
 }

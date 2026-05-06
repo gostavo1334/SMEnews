@@ -29,12 +29,12 @@ async function AdsPanel({ position }: { position: 'sidebar_left' | 'sidebar_righ
   return (
     <div className="hidden xl:flex w-[160px] flex-shrink-0 flex-col gap-4 sticky top-24 h-fit">
       {(() => {
-        const sideAds = ads.filter(ad => 
+        const sideAds = ads.filter((ad: any) => 
           ad.active && (ad.position === `${position}_1` || ad.position === `${position}_2`)
         ).sort((a, b) => a.position.localeCompare(b.position));
 
         return sideAds.length > 0 ? (
-          sideAds.map(ad => (
+          sideAds.map((ad: any) => (
             <a key={ad.id} href={ad.linkUrl || "#"} target="_blank" rel="noreferrer" className="block w-full">
               <div className="relative w-full h-[475px] rounded-md overflow-hidden border border-border/40 shadow-sm transition-transform hover:scale-[1.02]">
                 <Image 
@@ -121,7 +121,7 @@ async function PopularNews() {
 
 async function AdAfterArticle() {
   const ads = await getAds()
-  const ad = ads.find(ad => ad.active && ad.position === 'after_article')
+  const ad = ads.find((ad: any) => ad.active && ad.position === 'after_article')
   
   if (!ad) return (
     <div className="w-full aspect-[1920/200] bg-muted rounded-md flex items-center justify-center border border-dashed border-muted-foreground/20 mt-8">
@@ -147,7 +147,7 @@ async function AdAfterArticle() {
 
 async function AdAfterPopular() {
   const ads = await getAds()
-  const ad = ads.find(ad => ad.active && ad.position === 'after_popular')
+  const ad = ads.find((ad: any) => ad.active && ad.position === 'after_popular')
   
   if (!ad) return (
     <div className="w-full aspect-[2200/2200] bg-muted rounded-md flex items-center justify-center border border-dashed border-muted-foreground/20 mt-4">

@@ -12,8 +12,8 @@ export default async function MainLayout({
     getCategories()
   ]);
   
-  const topBannerAd = ads.find(ad => ad.active && ad.position === 'top_banner');
-  const sponsorAds = ads.filter(ad => ad.active && ad.position === 'sponsor_cube');
+  const topBannerAd = ads.find((ad: any) => ad.active && ad.position === 'top_banner');
+  const sponsorAds = ads.filter((ad: any) => ad.active && ad.position === 'sponsor_cube');
 
   return (
     <>

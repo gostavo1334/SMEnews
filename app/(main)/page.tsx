@@ -2,6 +2,7 @@ import { HeroSection } from "@/components/hero-section";
 import { getHomePageData, getAds, getPopularPosts } from "@/app/actions/post-actions";
 import Image from "next/image";
 import { Suspense } from "react";
+import { Metadata } from "next";
 import { HeroSectionSkeleton } from "@/components/hero-section-skeleton";
 import { NewsSectionSkeleton } from "@/components/news-section-skeleton";
 import { NewsCard } from "@/components/news-card";
@@ -10,6 +11,16 @@ import { Pagination } from "@/components/pagination";
 import { Advertisement, Post, Category, User } from '@/types/prisma'
 
 export const revalidate = 60; // revalidate every minute
+
+export const metadata: Metadata = {
+  title: "SME NEWS - ព័ត៌មានអាជីវកម្ម និងសេដ្ឋកិច្ច",
+  description: "ប្រភពព័ត៌មានអាជីវកម្ម នវានុវត្តន៍ និងបច្ចេកវិទ្យាឈានមុខគេនៅក្នុងប្រទេសកម្ពុជា",
+  openGraph: {
+    title: "SME NEWS - ព័ត៌មានអាជីវកម្ម និងសេដ្ឋកិច្ច",
+    description: "ប្រភពព័ត៌មានអាជីវកម្ម នវានុវត្តន៍ និងបច្ចេកវិទ្យាឈានមុខគេនៅក្នុងប្រទេសកម្ពុជា",
+    images: ["/Logo/logo.png"],
+  }
+};
 
 async function AdsPanel({ position }: { position: 'sidebar_left' | 'sidebar_right' }) {
   const ads = await getAds();
@@ -205,7 +216,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ p
   return (
     <div className="min-h-screen bg-background pb-12 relative isolate">
       {/* ACCENT BACKGROUND GLOW */}
-      <div className="absolute top-0 left-0 w-full h-[600px] -z-10 pointer-events-none opacity-40 blur-[120px] dark:opacity-50">
+      <div className="absolute top-0 left-0 w-full h-[600px] -z-10 pointer-events-none opacity-50 blur-[120px]">
         <Image
           src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&q=80"
           alt="Glow Background"

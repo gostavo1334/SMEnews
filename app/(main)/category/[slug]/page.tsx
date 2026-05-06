@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react'
+import { Metadata } from 'next'
 import { getCategories, getPostsByCategory, getAds, getPopularPosts } from '@/app/actions/post-actions'
 import { NewsCard } from '@/components/news-card'
 import { notFound } from 'next/navigation'
@@ -12,6 +13,28 @@ export const revalidate = 3600
 interface PageProps {
   params: Promise<{ slug: string }>
   searchParams: Promise<{ page?: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
+  const categories = await getCategories()
+  const category = categories.find((c: any) => c.slug === slug)
+
+  if (!category) {
+    return {
+      title: 'Category Not Found - SME NEWS'
+    }
+  }
+
+  return {
+    title: `${category.name} - SME NEWS`,
+    description: `អានព័ត៌មានថ្មីៗបំផុតអំពី ${category.name} នៅលើគេហទំព័រ SME NEWS`,
+    openGraph: {
+      title: `${category.name} - SME NEWS`,
+      description: `អានព័ត៌មានថ្មីៗបំផុតអំពី ${category.name} នៅលើគេហទំព័រ SME NEWS`,
+      images: ["/Logo/logo.png"],
+    }
+  }
 }
 
 async function AdsPanel({ position }: { position: 'sidebar_left' | 'sidebar_right' }) {

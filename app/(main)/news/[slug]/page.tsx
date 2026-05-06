@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react'
+import { Metadata } from 'next'
 import Image from 'next/image'
 import { Clock, Share2, User, Bookmark } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -22,6 +23,48 @@ export async function generateStaticParams() {
 
 interface PageProps {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
+  
+  if (!post) {
+    return {
+      title: 'Not Found - SME NEWS',
+      description: 'The requested news article could not be found.'
+    }
+  }
+
+  const title = `${post.title} - SME NEWS`
+  const description = post.metaDesc || post.summary || post.content?.substring(0, 160).replace(/<[^>]*>/g, '') || 'ព័ត៌មានអាជីវកម្ម និងសេដ្ឋកិច្ច'
+  const image = post.featuredImage || "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=80"
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        }
+      ],
+      type: 'article',
+      publishedTime: new Date(post.createdAt).toISOString(),
+      authors: [post.author?.name || 'SME NEWS Reporter'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [image],
+    },
+  }
 }
 
 async function AdsPanel({ position }: { position: 'sidebar_left' | 'sidebar_right' }) {

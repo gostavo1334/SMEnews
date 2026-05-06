@@ -189,7 +189,7 @@ async function MainContent({ page }: { page: number }) {
         </div>
 
         <div className="lg:w-1/3">
-          <Suspense fallback={<div className="space-y-4"><div className="h-8 w-32 bg-muted animate-pulse" />{[...Array(5)].map((_, i) => <div key={i} className="h-20 w-full bg-muted animate-pulse" />)}</div>}>
+          <Suspense fallback={<div className="space-y-4"><div className="h-8 w-32 bg-muted animate-pulse" />{[...Array(5)].map((_: any, i: number) => <div key={i} className="h-20 w-full bg-muted animate-pulse" />)}</div>}>
             <PopularNewsSidebar />
           </Suspense>
         </div>

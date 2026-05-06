@@ -83,7 +83,7 @@ export default function AdsPage({ initialAds = [] }: { initialAds: Ad[] }) {
     startTransition(async () => {
       try {
         await toggleAdStatus(id, !currentStatus)
-        setAds(ads.map(ad => ad.id === id ? { ...ad, active: !currentStatus } : ad))
+        setAds(ads.map((ad: Ad) => ad.id === id ? { ...ad, active: !currentStatus } : ad))
         toast.success("បច្ចុប្បន្នភាពស្ថានភាព")
       } catch (error) {
         toast.error("កំហុស")
@@ -97,7 +97,7 @@ export default function AdsPage({ initialAds = [] }: { initialAds: Ad[] }) {
     startTransition(async () => {
       try {
         await deleteAd(id)
-        setAds(ads.filter(ad => ad.id !== id))
+        setAds(ads.filter((ad: Ad) => ad.id !== id))
         toast.success("លុបបានជោគជ័យ")
       } catch (error) {
         toast.error("កំហុស")
@@ -133,7 +133,7 @@ export default function AdsPage({ initialAds = [] }: { initialAds: Ad[] }) {
                     <SelectValue placeholder="ជ្រើសរើសទីតាំង" />
                   </SelectTrigger>
                   <SelectContent>
-                    {positions.map(pos => (
+                    {positions.map((pos: any) => (
                       <SelectItem key={pos.value} value={pos.value}>{pos.label}</SelectItem>
                     ))}
                   </SelectContent>

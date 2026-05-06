@@ -96,11 +96,11 @@ export async function getDashboardData() {
     }
   })
   
-  const categoryData = categories.map((cat, i) => ({
+  const categoryData = categories.map((cat: any, i: number) => ({
     name: cat.name,
     value: cat._count.posts,
     fill: `oklch(${0.45 + i * 0.05} ${0.15 - i * 0.01} 250)`
-  })).filter(c => c.value > 0)
+  })).filter((c: any) => c.value > 0)
 
   // Real author distribution
   const authors = await prisma.user.findMany({
@@ -112,10 +112,10 @@ export async function getDashboardData() {
     take: 6
   })
 
-  const authorData = authors.map(author => ({
+  const authorData = authors.map((author: any) => ({
     name: author.name || 'Anonymous',
     articles: author._count.posts
-  })).sort((a, b) => b.articles - a.articles)
+  })).sort((a: any, b: any) => b.articles - a.articles)
 
   return {
     totalPosts,

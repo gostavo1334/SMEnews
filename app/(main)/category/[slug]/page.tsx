@@ -180,7 +180,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
             <div className="lg:w-2/3">
               <Suspense fallback={
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[...Array(4)].map((_, i) => <div key={i} className="h-[300px] bg-muted animate-pulse rounded-lg" />)}
+                  {[...Array(4)].map((_: any, i: number) => <div key={i} className="h-[300px] bg-muted animate-pulse rounded-lg" />)}
                 </div>
               }>
                <CategoryPostsGrid slug={slug} categoryName={category.name} page={page} />
@@ -191,7 +191,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
               <Suspense fallback={
                 <div className="space-y-4">
                   <div className="h-8 w-32 bg-muted animate-pulse" />
-                  {[...Array(4)].map((_, i) => <div key={i} className="h-20 w-full bg-muted animate-pulse" />)}
+                  {[...Array(4)].map((_: any, i: number) => <div key={i} className="h-20 w-full bg-muted animate-pulse" />)}
                 </div>
               }>
                 <PopularNews />

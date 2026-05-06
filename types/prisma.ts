@@ -8,15 +8,15 @@ export interface Post {
   id: number
   title: string
   slug: string
-  content: string
-  featuredImage: string | null
-  published: boolean
+  content?: string
+  featuredImage?: string | null
+  published?: boolean
   createdAt: Date | string
-  updatedAt: Date | string
-  seoTitle: string | null
-  metaDesc: string | null
-  categoryId: number | null
-  authorId: number | null
+  updatedAt?: Date | string
+  seoTitle?: string | null
+  metaDesc?: string | null
+  categoryId?: number | null
+  authorId?: number | null
 }
 
 export interface Advertisement {

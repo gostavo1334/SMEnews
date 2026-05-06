@@ -247,7 +247,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
 
               <div 
                 className="prose prose-sm md:prose-base dark:prose-invert max-w-none space-y-4 text-foreground/90 leading-relaxed KhmerOS"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{ __html: post.content || '' }}
               />
 
               <div className="mt-4 py-3 flex items-center gap-4 border-t border-border/40">
@@ -277,7 +277,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
               <Suspense fallback={
                 <div className="space-y-4">
                   <div className="h-8 w-32 bg-muted animate-pulse rounded-md" />
-                  {[...Array(4)].map((_, i) => <div key={i} className="h-20 w-full bg-muted animate-pulse rounded-md" />)}
+                  {[...Array(4)].map((_: any, i: number) => <div key={i} className="h-20 w-full bg-muted animate-pulse rounded-md" />)}
                 </div>
               }>
                 <PopularNews />

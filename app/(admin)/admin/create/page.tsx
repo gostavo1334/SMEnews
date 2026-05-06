@@ -86,7 +86,7 @@ export default function CreatePostPage() {
   }
 
   const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove))
+    setTags(tags.filter((tag: string) => tag !== tagToRemove))
   }
 
   const handleSubmit = async () => {
@@ -314,7 +314,7 @@ export default function CreatePostPage() {
                   onKeyDown={handleAddTag}
                 />
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {tags.map(tag => (
+                  {tags.map((tag: string) => (
                     <Badge key={tag} variant="secondary" className="rounded-md flex items-center gap-1 pr-1">
                       {tag}
                       <button 

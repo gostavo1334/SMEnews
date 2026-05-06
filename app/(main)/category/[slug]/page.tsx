@@ -163,8 +163,21 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   }
 
   return (
-    <div className="min-h-screen bg-background pb-12">
-      <div className="flex justify-center gap-4 px-4 max-w-[1600px] mx-auto pt-8">
+    <div className="min-h-screen bg-background pb-12 relative isolate">
+      {/* ACCENT BACKGROUND GLOW */}
+      <div className="absolute top-0 left-0 w-full h-[600px] -z-10 pointer-events-none opacity-40 blur-[120px] dark:opacity-50">
+        <Image
+          src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&q=80"
+          alt="Glow Background"
+          fill
+          sizes="100vw"
+          className="object-cover scale-150"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
+      </div>
+
+      <div className="flex justify-center gap-4 px-4 max-w-[1600px] mx-auto pt-6">
         
         <Suspense fallback={<div className="hidden xl:block w-[160px] h-[600px] bg-muted animate-pulse rounded-md" />}>
           <AdsPanel position="sidebar_left" />

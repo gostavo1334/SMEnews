@@ -15,7 +15,7 @@ async function AdsPanel({ position }: { position: 'sidebar_left' | 'sidebar_righ
   const ads = await getAds();
 
   return (
-    <div className="hidden xl:flex w-[160px] flex-shrink-0 flex-col gap-4 sticky top-24 h-fit">
+    <div className="hidden xl:flex w-[160px] flex-shrink-0 flex-col gap-4 sticky top-24 h-fit z-20">
       {(() => {
         const sideAds = ads.filter((ad: Advertisement) =>
           ad.active && (ad.position === `${position}_1` || ad.position === `${position}_2`)
@@ -203,8 +203,21 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ p
   const page = parseInt(params.page || "1")
 
   return (
-    <div className="min-h-screen bg-background pb-12 relative">
-      <div className="flex justify-center gap-4 px-4 max-w-[1600px] mx-auto pt-4">
+    <div className="min-h-screen bg-background pb-12 relative isolate">
+      {/* ACCENT BACKGROUND GLOW */}
+      <div className="absolute top-0 left-0 w-full h-[600px] -z-10 pointer-events-none opacity-40 blur-[120px] dark:opacity-50">
+        <Image
+          src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&q=80"
+          alt="Glow Background"
+          fill
+          sizes="100vw"
+          className="object-cover scale-150"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
+      </div>
+
+      <div className="relative z-10 flex justify-center gap-4 px-4 max-w-[1600px] mx-auto pt-4">
         
         <Suspense fallback={<div className="hidden xl:block w-[160px] h-[600px] bg-muted animate-pulse rounded-md" />}>
           <AdsPanel position="sidebar_left" />

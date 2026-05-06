@@ -25,6 +25,7 @@ import {
   SheetTrigger 
 } from "@/components/ui/sheet"
 import { SponsorCube } from "@/components/sponsor-cube"
+import { ModeToggle } from "@/components/mode-toggle"
 
 const navItems = [
   { title: "ទំព័រដើម", href: "/" },
@@ -62,7 +63,7 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
   return (
     <>
       {/* TOP BAR STONE */}
-      <div id="site-header-top" className="w-full border-b border-border/10 bg-background/50">
+      <div id="site-header-top" className="relative z-30 w-full border-b border-border/10 bg-background/50">
         <div className="w-full px-6 py-2 flex items-center justify-between gap-8">
           <div className="flex-shrink-0">
             <Link href="/">
@@ -164,6 +165,7 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
                 className="pl-8 h-8 w-[150px] text-xs bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:w-[200px] focus:bg-white/20 transition-all"
               />
             </div>
+            <ModeToggle className="text-white hover:bg-white/10" />
           </div>
         </div>
       </div>

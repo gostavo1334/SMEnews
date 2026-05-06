@@ -5,14 +5,16 @@ import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
-export function ModeToggle() {
+export function ModeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
 
   return (
     <Button
       variant="ghost"
       size="icon"
+      className={cn("size-8 rounded-full", className)}
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       title="ប្តូរពណ៌"
     >

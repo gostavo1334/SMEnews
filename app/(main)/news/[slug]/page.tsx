@@ -189,7 +189,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
   return (
     <div className="min-h-screen pb-12 relative isolate">
       {/* ACCENT BACKGROUND GLOW */}
-      <div className="absolute top-0 left-0 w-full h-[500px] -z-10 pointer-events-none opacity-40 blur-[100px] dark:opacity-30">
+      <div className="absolute top-0 left-0 w-full h-[500px] -z-10 pointer-events-none opacity-40 blur-[100px] dark:opacity-60">
         <Image
           src={post.featuredImage || "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=80"}
           alt="Blur Background"

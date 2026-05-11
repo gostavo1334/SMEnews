@@ -1,11 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+// FORCING A HARD RESET TO CLEAR STALE "WARM" FUNCTIONS ON VERCEL
+// We are intentionally NOT reusing the global object for this deployment 
+// to ensure the old DriverAdapter client is completely purged.
 
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log: ["query"],
-  });
+export const prisma = new PrismaClient({
+  log: ["query"],
+});
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Purging global cache
+const globalForPrisma = global as unknown as { prisma: any };
+globalForPrisma.prisma = undefined;

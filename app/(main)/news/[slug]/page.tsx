@@ -13,12 +13,7 @@ import { PostContentViewer } from '@/components/post-content-viewer'
 import { ReportDialog } from '@/components/report-dialog'
 import { Advertisement, PostWithRelations } from '@/types/prisma'
 
-export const revalidate = 3600
-
-export async function generateStaticParams() {
-  const data = await getPosts(1, 20)
-  return data.posts.map((post) => ({ slug: post.slug }))
-}
+export const dynamic = 'force-dynamic'
 
 interface PageProps {
   params: Promise<{ slug: string }>

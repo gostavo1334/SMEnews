@@ -47,13 +47,13 @@ export function UserEditDialog({ user }: UserEditDialogProps) {
 
     try {
       const formData = new FormData(e.currentTarget)
-      await updateUser(user.id, formData)
+      await updateUser(formData)
       toast.success('ធ្វើបច្ចុប្បន្នភាពជោគជ័យ')
       setOpen(false)
       router.refresh()
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
-      toast.error('មានបញ្ហាក្នុងការរក្សាទុក')
+      toast.error(error.message || 'មានបញ្ហាក្នុងការរក្សាទុក')
     } finally {
       setLoading(false)
     }
@@ -77,6 +77,11 @@ export function UserEditDialog({ user }: UserEditDialogProps) {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
+            <input type="hidden" name="id" value={user.id} />
+            <div className="grid gap-2">
+              <Label htmlFor="edit-username">ឈ្មោះអ្នកប្រើប្រាស់</Label>
+              <Input id="edit-username" name="username" defaultValue={(user as any).username || ''} required />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="edit-name">ឈ្មោះពេញ</Label>
               <Input id="edit-name" name="name" defaultValue={user.name || ''} required />
@@ -84,6 +89,23 @@ export function UserEditDialog({ user }: UserEditDialogProps) {
             <div className="grid gap-2">
               <Label htmlFor="edit-email">អ៊ីមែល</Label>
               <Input id="edit-email" name="email" defaultValue={user.email || ''} />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="edit-role">តួនាទី</Label>
+              <select 
+                id="edit-role" 
+                name="role" 
+                defaultValue={(user as any).role}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                required
+              >
+                <option value="reporter">អ្នកយកព័ត៌មាន (Reporter)</option>
+                <option value="admin">អ្នកគ្រប់គ្រង (Admin)</option>
+              </select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="edit-password">លេខសម្ងាត់ថ្មី (ទុកទំនេរបើមិនចង់ប្តូរ)</Label>
+              <Input id="edit-password" name="password" type="password" placeholder="បញ្ជូលលេខសម្ងាត់ថ្មី..." />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="edit-image">រូបភាពថ្មី (ទុកទំនេរបើមិនចង់ប្តូរ)</Label>

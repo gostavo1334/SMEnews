@@ -29,11 +29,15 @@ export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps
 
   return (
     <div className="flex items-center justify-center gap-2 mt-12 py-4">
-      <Link href={getPageUrl(Math.max(1, currentPage - 1))} passHref>
-        <Button variant="outline" size="icon" disabled={currentPage === 1} className="size-9">
-          <ChevronLeft className="size-4" />
-        </Button>
-      </Link>
+      <Button 
+        variant="outline" 
+        size="icon" 
+        disabled={currentPage === 1} 
+        className="size-9"
+        render={<Link href={getPageUrl(Math.max(1, currentPage - 1))} />}
+      >
+        <ChevronLeft className="size-4" />
+      </Button>
 
       {visiblePages.map((page, i) => {
         const showEllipsis = i > 0 && page - visiblePages[i - 1] > 1
@@ -41,26 +45,29 @@ export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps
         return (
           <div key={page} className="flex items-center gap-2">
             {showEllipsis && <span className="text-muted-foreground">...</span>}
-            <Link href={getPageUrl(page)} passHref>
-              <Button 
-                variant={currentPage === page ? "default" : "outline"} 
-                className={cn(
-                  "size-9 p-0",
-                  currentPage === page ? "bg-primary text-white" : ""
-                )}
-              >
-                {page}
-              </Button>
-            </Link>
+            <Button 
+              variant={currentPage === page ? "default" : "outline"} 
+              className={cn(
+                "size-9 p-0",
+                currentPage === page ? "bg-primary text-white" : ""
+              )}
+              render={<Link href={getPageUrl(page)} />}
+            >
+              {page}
+            </Button>
           </div>
         )
       })}
 
-      <Link href={getPageUrl(Math.min(totalPages, currentPage + 1))} passHref>
-        <Button variant="outline" size="icon" disabled={currentPage === totalPages} className="size-9">
-          <ChevronRight className="size-4" />
-        </Button>
-      </Link>
+      <Button 
+        variant="outline" 
+        size="icon" 
+        disabled={currentPage === totalPages} 
+        className="size-9"
+        render={<Link href={getPageUrl(Math.min(totalPages, currentPage + 1))} />}
+      >
+        <ChevronRight className="size-4" />
+      </Button>
     </div>
   )
 }

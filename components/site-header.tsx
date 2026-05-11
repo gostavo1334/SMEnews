@@ -48,14 +48,23 @@ const navItems = [
 ]
 
 export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { topBannerAd?: any, sponsorAds?: any[], categories?: any[] }) {
-  const dynamicNavItems = [
+  const [open, setOpen] = React.useState(false);
+
+  const rootCategories = categories.filter(cat => !cat.parentId && cat.name !== "វីដេអូ" && cat.name !== "ទំព័រដើម" && cat.name !== "ឯកសារ")
+  
+  const dynamicNavItems: any[] = [
     { title: "ទំព័រដើម", href: "/" },
-    ...categories
-      .filter(cat => cat.name !== "វីដេអូ" && cat.name !== "ទំព័រដើម")
-      .map(cat => ({
+    ...rootCategories.map(cat => {
+      const subCats = categories.filter(sub => sub.parentId === cat.id)
+      return {
         title: cat.name,
-        href: `/category/${cat.slug}`
-      })),
+        href: `/category/${cat.slug}`,
+        items: subCats.length > 0 ? subCats.map(sub => ({
+          title: sub.name,
+          href: `/category/${sub.slug}`
+        })) : undefined
+      }
+    }),
     { title: "វីដេអូ", href: "/video" },
     { title: "ទាញយកឯកសារ", href: "/downloads" },
   ]
@@ -111,8 +120,9 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
           
           {/* MOBILE MENU TRIGGER */}
           <div className="md:hidden flex items-center">
-            <Sheet>
+            <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger
+
                 render={
                   <button className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "size-9 text-white hover:bg-white/10")}>
                     <Menu className="size-5" />
@@ -128,10 +138,28 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
                     <div key={item.href} className="flex flex-col">
                       <Link 
                         href={item.href} 
-                        className="px-4 py-2 text-sm font-medium hover:bg-accent rounded-md transition-colors"
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          "px-4 py-2 text-sm font-medium hover:bg-accent rounded-md transition-colors",
+                          item.items && "bg-muted/30 mb-1"
+                        )}
                       >
                         {item.title}
                       </Link>
+                      {item.items && (
+                        <div className="flex flex-col ml-4 border-l pl-2 mb-2">
+                          {item.items.map((sub: any) => (
+                            <Link
+                              key={sub.href}
+                              href={sub.href}
+                              onClick={() => setOpen(false)}
+                              className="px-4 py-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                            >
+                              {sub.title}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -140,16 +168,41 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
           </div>
 
           {/* DESKTOP MENU - HIDDEN ON MOBILE */}
-          <NavigationMenu className="hidden md:flex max-w-fit justify-start">
+          <NavigationMenu 
+            className="hidden md:flex max-w-fit justify-start"
+            viewportClassName="bg-primary border-primary/10 shadow-2xl rounded-xl ring-0"
+          >
             <NavigationMenuList className="flex-wrap">
               {dynamicNavItems.map((item) => (
                 <NavigationMenuItem key={item.href}>
-                  <Link 
-                    href={item.href} 
-                    className={cn(navigationMenuTriggerStyle(), "text-[14px] font-medium KhmerOS !bg-transparent text-primary-foreground !hover:bg-white/10 hover:text-white")}
-                  >
-                    {item.title}
-                  </Link>
+                  {item.items ? (
+                    <>
+                      <NavigationMenuTrigger className="text-[14px] font-medium KhmerOS !bg-transparent text-primary-foreground !hover:bg-white/10 hover:text-white">
+                        {item.title}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className={cn(
+                          "grid gap-1 p-2 KhmerOS min-w-[200px]",
+                          item.items.length > 4 ? "w-[400px] grid-cols-2" : "w-auto grid-cols-1"
+                        )}>
+                          {item.items.map((sub: any) => (
+                            <ListItem
+                              key={sub.href}
+                              title={sub.title}
+                              href={sub.href}
+                            />
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    </>
+                  ) : (
+                    <Link 
+                      href={item.href} 
+                      className={cn(navigationMenuTriggerStyle(), "text-[14px] font-medium KhmerOS !bg-transparent text-primary-foreground !hover:bg-white/10 hover:text-white")}
+                    >
+                      {item.title}
+                    </Link>
+                  )}
                 </NavigationMenuItem>
               ))}
             </NavigationMenuList>
@@ -175,7 +228,6 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
 
 function ListItem({
   title,
-  children,
   href,
   className,
   ...props
@@ -185,14 +237,11 @@ function ListItem({
       <Link
         href={href}
         className={cn(
-          "block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+          "block select-none rounded-md px-3 py-2 leading-none no-underline outline-none transition-colors hover:bg-sky-500/20 hover:text-white focus:bg-sky-500/20 focus:text-white text-white/90",
           className
         )}
       >
-        <div className="text-sm font-medium leading-none">{title}</div>
-        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-          {children}
-        </p>
+        <div className="text-sm font-medium leading-none KhmerOS">{title}</div>
       </Link>
     </li>
   )

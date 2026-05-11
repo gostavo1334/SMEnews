@@ -15,7 +15,9 @@ import {
 
   ArrowDownLeft,
   MessageCircle,
+  Lock,
 } from 'lucide-react';
+
 import Waves from '@/components/waves';
 
 const data = () => ({
@@ -50,8 +52,8 @@ export function SiteFooter() {
           friction={0.9}
           tension={0.01}
           maxCursorMove={120}
-          xGap={12}
-          yGap={36}
+          xGap={24}
+          yGap={64}
         />
       </div>
       <div className="animate-energy-flow via-primary h-px w-full bg-gradient-to-r from-transparent to-transparent" />
@@ -85,8 +87,18 @@ export function SiteFooter() {
                 {label}
               </Link>
             ))}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              render={<Link href="/login" />}
+              className="h-8 gap-1.5 text-muted-foreground hover:text-foreground"
+            >
+              <Lock className="h-3.5 w-3.5" />
+              <span>សម្រាប់បុគ្គលិក</span>
+            </Button>
           </div>
         </div>
+
         <span className="from-primary/20 absolute inset-x-0 bottom-0 left-0 -z-10 h-1/3 w-full bg-gradient-to-t" />
       </div>
     </footer>

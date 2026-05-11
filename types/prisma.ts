@@ -11,8 +11,10 @@ export interface Post {
   content?: string
   featuredImage?: string | null
   published?: boolean
+  publishedAt: Date | string
   createdAt: Date | string
   updatedAt?: Date | string
+  viewCount?: number
   seoTitle?: string | null
   metaDesc?: string | null
   categoryId?: number | null
@@ -34,7 +36,7 @@ export interface User {
   id: number
   name: string | null
   email: string | null
-  emailVerified: Date | string | null
+  emailVerified: Date | string | null | any
   image: string | null
 }
 

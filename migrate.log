@@ -1,0 +1,60 @@
+
+Entering table: ads
+
+Entering table: category
+Created category: សង្គមជាតិ-សេដ្ឋកិច្ច
+Created category: អាជីវកម្មខ្នាតតូច-មធ្យម និងសិប្បកម្ម
+Created category: នវានុវត្តន៍-បច្ចេកវិទ្យា
+Created category: ធនាគារ-ហិរញ្ញវត្ថុ
+Created category: ពាណិជ្ជកម្ម
+Created category: គំនិតអាជីវកម្ម
+Created category: វីដេអូ
+Created category: ឯកសារ
+
+Entering table: category_doc
+
+Entering table: deleted_record
+
+Entering table: documents
+
+Entering table: posts
+Created author: SME News
+Created author: លោក​ រាជៈ ឥន្រ្ទរៈ
+Created author: លោក រាជៈ ឥន្រ្ទរៈ
+Created author: ទូច សូរិយា
+Created author: គិត បុប្ផា
+Processed 500 posts...
+Created author: ហាក់ ហេងឃីម
+Created author: វ៉ាន់ រិទ្ធី
+Created author: ហ៊ត គឹមលី
+Processed 1000 posts...
+Created author: លន់ ចាន់ធូ
+Created author: វ៉ិត ស៊ីដឿន
+Created author: ដេប៉ាលីយែរ ម៉ារីលីណា
+Created author: អ៊ួន សំណាង
+Created author: គន ម៉េងហុង
+Processed 1500 posts...
+Created author: ឃី ភារៈ
+Created author: ប៊ី សុភាន់
+Created author: លី គឹមហុង
+Processed 2000 posts...
+Processed 2500 posts...
+Processed 3000 posts...
+Processed 3500 posts...
+Processed 4000 posts...
+Processed 4500 posts...
+Processed 5000 posts...
+ERROR: Failed to createMany posts: canceling statement due to statement timeout
+Processed 5500 posts...
+
+Entering table: posts_copy
+
+Entering table: post_schedule
+
+Entering table: post_vocabulary
+
+Entering table: staff
+
+Entering table: users
+Processed 5656 posts...
+Migration complete!

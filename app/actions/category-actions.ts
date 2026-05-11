@@ -7,6 +7,7 @@ import { redis } from "@/lib/redis"
 export async function getCategories() {
   return await prisma.category.findMany({
     include: {
+      parent: true,
       _count: {
         select: { posts: true }
       }
@@ -17,26 +18,35 @@ export async function getCategories() {
   })
 }
 
-export async function createCategory(name: string, slug: string) {
+export async function createCategory(name: string, slug: string, parentId?: number) {
   const category = await prisma.category.create({
     data: {
       name,
-      slug
+      slug,
+      parentId
     }
   })
   
   await redis.del('home_page_data')
+  await redis.del('all_categories')
+  await redis.del('dashboard_data')
   revalidatePath("/admin/category")
   return category
 }
 
-export async function updateCategory(id: number, name: string, slug: string) {
+export async function updateCategory(id: number, name: string, slug: string, parentId?: number) {
   const category = await prisma.category.update({
     where: { id },
-    data: { name, slug }
+    data: { 
+      name, 
+      slug,
+      parentId: parentId || null
+    }
   })
   
   await redis.del('home_page_data')
+  await redis.del('all_categories')
+  await redis.del('dashboard_data')
   revalidatePath("/admin/category")
   return category
 }
@@ -47,5 +57,7 @@ export async function deleteCategory(id: number) {
   })
   
   await redis.del('home_page_data')
+  await redis.del('all_categories')
+  await redis.del('dashboard_data')
   revalidatePath("/admin/category")
 }

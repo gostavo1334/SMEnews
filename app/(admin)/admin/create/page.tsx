@@ -11,7 +11,8 @@ import {
   Send, 
   Save,
   Image as ImageIcon,
-  X
+  X,
+  Loader2
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
@@ -31,6 +32,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Badge } from '@/components/ui/badge'
 import { createPost, getCategories, getAuthors } from '@/app/actions/post-actions'
+import { TimePicker } from '@/components/ui/time-picker'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
@@ -49,11 +51,21 @@ export default function CreatePostPage() {
   const [metaDesc, setMetaDesc] = React.useState('')
   const [seoTitle, setSeoTitle] = React.useState('')
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [isDrafting, setIsDrafting] = React.useState(false)
   const [dbCategories, setDbCategories] = React.useState<{id: number, name: string}[]>([])
   const [dbAuthors, setDbAuthors] = React.useState<{id: number, name: string | null}[]>([])
   const [selectedCategory, setSelectedCategory] = React.useState('')
   const [selectedAuthor, setSelectedAuthor] = React.useState('')
   const [featuredImage, setFeaturedImage] = React.useState<File | null>(null)
+  const [status, setStatus] = React.useState('published')
+  const [postTime, setPostTime] = React.useState('09:00')
+  const [currentTime, setCurrentTime] = React.useState(new Date())
+  const [shareTelegram, setShareTelegram] = React.useState(false)
+
+  React.useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+    return () => clearInterval(timer)
+  }, [])
   
   const router = useRouter()
 
@@ -89,7 +101,7 @@ export default function CreatePostPage() {
     setTags(tags.filter((tag: string) => tag !== tagToRemove))
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (overrideStatus?: string) => {
     if (!title || !content) {
       toast.error('សូមបញ្ចូលចំណងជើង និងខ្លឹមសារ!')
       return
@@ -100,7 +112,10 @@ export default function CreatePostPage() {
       return
     }
 
-    setIsSubmitting(true)
+    const finalStatus = overrideStatus || status
+    if (finalStatus === 'draft') setIsDrafting(true)
+    else setIsSubmitting(true)
+    
     const formData = new FormData()
     formData.append('title', title)
     formData.append('slug', slug)
@@ -110,22 +125,32 @@ export default function CreatePostPage() {
     if (selectedCategory) formData.append('categoryId', selectedCategory)
     if (selectedAuthor) formData.append('authorId', selectedAuthor)
     if (featuredImage) formData.append('featuredImage', featuredImage)
-    formData.append('published', 'true')
+    
+    // Status Logic
+    formData.append('published', finalStatus === 'draft' ? 'false' : 'true')
+    if (postDate) {
+      const combinedDate = new Date(postDate)
+      const [hours, minutes] = postTime.split(':')
+      combinedDate.setHours(parseInt(hours), parseInt(minutes))
+      formData.append('publishedAt', combinedDate.toISOString())
+    }
+    if (shareTelegram) formData.append('shareTelegram', 'true')
 
     try {
       await createPost(formData)
-      toast.success('អត្ថបទត្រូវបានរក្សាទុកដោយជោគជ័យ!')
-      router.push('/admin/posts')
+      toast.success(finalStatus === 'draft' ? 'បានរក្សាទុកក្នុងព្រាងជោគជ័យ!' : 'អត្ថបទត្រូវបានរក្សាទុកដោយជោគជ័យ!')
+      router.push(finalStatus === 'draft' ? '/admin/drafts' : '/admin/posts')
     } catch (error) {
       console.error(error)
-      toast.error('មានបញ្ហាក្នុងការរក្សាទុក! (FK Error or UUID issues)')
+      toast.error('មានបញ្ហាក្នុងការរក្សាទុក!')
     } finally {
       setIsSubmitting(false)
+      setIsDrafting(false)
     }
   }
 
   return (
-    <div className="p-6 md:p-8 space-y-6 max-w-[1200px]">
+    <div className="p-6 md:p-8 space-y-6 w-full">
       
       {/* HEADER */}
       <div className="flex items-center justify-between">
@@ -141,12 +166,13 @@ export default function CreatePostPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" disabled={isSubmitting}>
-            រក្សាទុកព្រាង
+          <Button variant="outline" size="sm" onClick={() => handleSubmit('draft')} disabled={isSubmitting || isDrafting}>
+            {isDrafting ? <Loader2 className="size-4 animate-spin mr-2" /> : null}
+            រក្សាទុកព្រាង (Save Draft)
           </Button>
-          <Button size="sm" onClick={handleSubmit} disabled={isSubmitting}>
-            <Save className="size-4 mr-2" />
-            {isSubmitting ? 'កំពុងរក្សាទុក...' : 'បោះពុម្ពផ្សាយ'}
+          <Button size="sm" onClick={() => handleSubmit()} disabled={isSubmitting || isDrafting}>
+            {isSubmitting ? <Loader2 className="size-4 animate-spin mr-2" /> : <Save className="size-4 mr-2" />}
+            {isSubmitting ? 'កំពុងរក្សាទុក...' : status === 'scheduled' ? 'កំណត់ពេលចុះផ្សាយ' : 'បោះពុម្ពផ្សាយ'}
           </Button>
         </div>
       </div>
@@ -260,9 +286,45 @@ export default function CreatePostPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>ព័ត៌មានបន្ថែម</CardTitle>
+              <CardTitle>ការកំណត់ការចុះផ្សាយ</CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
+              <div className="space-y-2">
+                <Label>ស្ថានភាព (Status)</Label>
+                <Select value={status === 'draft' ? 'published' : status} onValueChange={setStatus}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="ជ្រើសរើសស្ថានភាព" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="published">បោះពុម្ពផ្សាយភ្លាមៗ</SelectItem>
+                    <SelectItem value="scheduled">កំណត់ពេលវេលា</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>{status === 'scheduled' ? 'ពេលវេលាចុះផ្សាយ (Schedule Time)' : 'ថ្ងៃខែឆ្នាំ និងម៉ោង (Post Date & Time)'}</Label>
+                  <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded">
+                    បច្ចុប្បន្ន: {currentTime.toLocaleTimeString('km-KH', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <DatePicker date={postDate} setDate={(date) => {
+                      setPostDate(date)
+                      if (date && date > new Date() && status !== 'draft') {
+                        setStatus('scheduled')
+                      }
+                    }} />
+                  </div>
+                  <TimePicker 
+                    value={postTime}
+                    onChange={setPostTime}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label>អ្នកនិពន្ធ (Author)</Label>
                 <Select value={selectedAuthor} onValueChange={setSelectedAuthor}>
@@ -272,7 +334,18 @@ export default function CreatePostPage() {
                   <SelectContent>
                     {dbAuthors.length > 0 ? (
                       dbAuthors.map((author: any) => (
-                        <SelectItem key={author.id} value={author.id.toString()}>{author.name || 'Anonymous'}</SelectItem>
+                        <SelectItem key={author.id} value={author.id.toString()}>
+                          <div className="flex items-center gap-2">
+                            {author.image ? (
+                              <img src={author.image} alt={author.name} className="size-5 rounded-full object-cover border border-border/50" />
+                            ) : (
+                              <div className="size-5 rounded-full bg-muted flex items-center justify-center text-[10px] border border-border/50">
+                                {author.name?.charAt(0) || 'U'}
+                              </div>
+                            )}
+                            <span>{author.name || 'Anonymous'}</span>
+                          </div>
+                        </SelectItem>
                       ))
                     ) : (
                       <SelectItem value="none" disabled>កំពុងផ្ទុកអ្នកនិពន្ធ...</SelectItem>
@@ -281,10 +354,6 @@ export default function CreatePostPage() {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label>កាលបរិច្ឆេទ (Post Date)</Label>
-                <DatePicker date={postDate} setDate={setPostDate} />
-              </div>
 
               <div className="space-y-2">
                 <Label>ប្រភេទអត្ថបទ (Category)</Label>
@@ -368,7 +437,7 @@ export default function CreatePostPage() {
                   <Send className="size-4 text-blue-500" />
                   <Label htmlFor="share-tg" className="font-normal cursor-pointer">Telegram</Label>
                 </div>
-                <Checkbox id="share-tg" />
+                <Checkbox id="share-tg" checked={shareTelegram} onCheckedChange={(v) => setShareTelegram(!!v)} />
               </div>
             </CardContent>
           </Card>

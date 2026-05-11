@@ -37,6 +37,8 @@ interface Category {
   id: number
   name: string
   slug: string
+  parentId?: number | null
+  parent?: { name: string } | null
   _count?: {
     posts: number
   }
@@ -119,6 +121,7 @@ export function CategoryClientTable({ initialCategories }: CategoryClientTablePr
                 <TableRow className="bg-muted/30">
                   <TableHead className="w-[80px]">ID</TableHead>
                   <TableHead>ឈ្មោះប្រភេទ (Category Name)</TableHead>
+                  <TableHead>ប្រភេទមេ (Parent)</TableHead>
                   <TableHead>ស្លាកតំណភ្ជាប់ (Slug)</TableHead>
                   <TableHead>ចំនួនអត្ថបទ (Post Count)</TableHead>
                   <TableHead className="text-right">សកម្មភាព</TableHead>
@@ -130,6 +133,15 @@ export function CategoryClientTable({ initialCategories }: CategoryClientTablePr
                     <TableRow key={cat.id}>
                       <TableCell className="font-mono text-xs text-muted-foreground">{cat.id}</TableCell>
                       <TableCell className="font-medium">{cat.name}</TableCell>
+                      <TableCell>
+                        {cat.parent ? (
+                          <Badge variant="outline" className="font-normal text-xs bg-primary/5 border-primary/20 text-primary">
+                            {cat.parent.name}
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground text-xs italic">មេ (Root)</span>
+                        )}
+                      </TableCell>
                       <TableCell>
                         <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{cat.slug}</code>
                       </TableCell>
@@ -162,7 +174,7 @@ export function CategoryClientTable({ initialCategories }: CategoryClientTablePr
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">
+                    <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
                       រកមិនឃើញប្រភេទឡើយ
                     </TableCell>
                   </TableRow>
@@ -177,6 +189,7 @@ export function CategoryClientTable({ initialCategories }: CategoryClientTablePr
         open={dialogOpen} 
         onOpenChange={setDialogOpen} 
         category={editingCategory} 
+        allCategories={initialCategories}
       />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

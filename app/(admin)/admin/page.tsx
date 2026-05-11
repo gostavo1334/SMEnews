@@ -1,23 +1,28 @@
-import React from 'react'
 import { 
   FileText, 
   Eye, 
-  Heart, 
   TrendingUp,
-  BookOpen,
-  ListFilter,
   Users,
-  Layers
+  Layers,
+  BookCheck,
+  FileEdit,
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { DashboardCharts } from '@/components/admin/dashboard-charts'
+import { DashboardActions } from '@/components/admin/dashboard-actions'
 import { getDashboardData } from '@/app/actions/post-actions'
-
-// ── CHART CONFIGS ──────────────────────────────────────────
 
 export default async function AdminDashboard() {
   const data = await getDashboardData()
+
+  const stats = [
+    { label: 'ចំនួនអត្ថបទសរុប', value: data.totalPosts, icon: FileText, color: 'text-blue-500', bg: 'bg-blue-500/10', note: 'ពីមូលដ្ឋានទិន្នន័យ' },
+    { label: 'បានផ្សព្វផ្សាយ', value: data.publishedPosts, icon: BookCheck, color: 'text-green-500', bg: 'bg-green-500/10', note: `${data.totalPosts > 0 ? Math.round((data.publishedPosts / data.totalPosts) * 100) : 0}% នៃសរុប` },
+    { label: 'សេចក្ដីព្រាង', value: data.draftPosts, icon: FileEdit, color: 'text-amber-500', bg: 'bg-amber-500/10', note: 'រង់ចាំការផ្សព្វផ្សាយ' },
+    { label: 'ចំនួនមើលសរុប', value: data.totalViews.toLocaleString(), icon: Eye, color: 'text-purple-500', bg: 'bg-purple-500/10', note: 'គ្រប់អត្ថបទ' },
+    { label: 'ចំនួនប្រភេទ', value: data.totalCategories, icon: Layers, color: 'text-cyan-500', bg: 'bg-cyan-500/10', note: 'គ្រប់គ្រងក្នុងផ្នែកប្រភេទ' },
+    { label: 'ចំនួនអ្នកនិពន្ធ', value: data.totalAuthors, icon: Users, color: 'text-pink-500', bg: 'bg-pink-500/10', note: 'អ្នករួមចំណែក' },
+  ]
 
   return (
     <div className="p-6 md:p-8 space-y-8 max-w-[1400px]">
@@ -30,74 +35,31 @@ export default async function AdminDashboard() {
         </div>
 
         {/* ACTIONS */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <Button size="sm" variant="outline">
-            <ListFilter className="size-3.5 mr-1" />
-            Export Report
-          </Button>
-          <Button size="sm">
-            Refresh Data
-          </Button>
-        </div>
+        <DashboardActions data={data} />
       </div>
 
-      {/* STATS CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">ចំនួនអត្ថបទសរុប</p>
-                <p className="text-3xl font-bold mt-1">{data.totalPosts}</p>
+      {/* STATS CARDS - 6 cards in a grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        {stats.map((stat) => (
+          <Card key={stat.label} className="relative overflow-hidden">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className={`size-9 rounded-lg ${stat.bg} flex items-center justify-center`}>
+                  <stat.icon className={`size-4.5 ${stat.color}`} />
+                </div>
               </div>
-              <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                <FileText className="size-6 text-primary" />
+              <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{stat.label}</p>
+              <div className="flex items-center gap-1 mt-2">
+                <TrendingUp className="size-3 text-green-500" />
+                <span className="text-[9px] text-muted-foreground">{stat.note}</span>
               </div>
-            </div>
-            <div className="flex items-center gap-1 mt-3">
-              <TrendingUp className="size-3.5 text-green-500" />
-              <span className="text-xs text-green-500 font-medium">Real-time</span>
-              <span className="text-xs text-muted-foreground ml-1">ពីមូលដ្ឋានទិន្នន័យ</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">ចំនួនប្រភេទសរុប</p>
-                <p className="text-3xl font-bold mt-1">{data.totalCategories}</p>
-              </div>
-              <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Layers className="size-6 text-primary" />
-              </div>
-            </div>
-            <div className="flex items-center gap-1 mt-3">
-              <span className="text-xs text-muted-foreground">គ្រប់គ្រងក្នុងផ្នែកប្រភេទ</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">ចំនួនអ្នកនិពន្ធ</p>
-                <p className="text-3xl font-bold mt-1">{data.totalAuthors}</p>
-              </div>
-              <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Users className="size-6 text-primary" />
-              </div>
-            </div>
-            <div className="flex items-center gap-1 mt-3">
-              <span className="text-xs text-muted-foreground">អ្នករួមចំណែកក្នុងគេហទំព័រ</span>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* CHARTS ROW */}
+      {/* CHARTS */}
       <DashboardCharts data={data} />
 
     </div>

@@ -33,9 +33,9 @@ export function UserForm() {
       e.currentTarget.reset()
       setPreview(null)
       router.refresh()
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
-      toast.error('មានបញ្ហាក្នុងការបន្ថែមអ្នកប្រើប្រាស់')
+      toast.error(error.message || 'មានបញ្ហាក្នុងការបន្ថែមអ្នកប្រើប្រាស់')
     } finally {
       setLoading(false)
     }
@@ -44,13 +44,36 @@ export function UserForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
+        <Label htmlFor="username">ឈ្មោះអ្នកប្រើប្រាស់</Label>
+        <Input id="username" name="username" placeholder="បញ្ជូលឈ្មោះអ្នកប្រើប្រាស់..." required />
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="name">ឈ្មោះពេញ</Label>
-        <Input id="name" name="name" placeholder="បញ្ជូលឈ្មោះ..." required />
+        <Input id="name" name="name" placeholder="បញ្ជូលឈ្មោះពេញ..." required />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="email">អ៊ីមែល (មិនបង្ខំ)</Label>
         <Input id="email" name="email" type="email" placeholder="example@gmail.com" />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="role">តួនាទី</Label>
+        <select 
+          id="role" 
+          name="role" 
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          required
+        >
+          <option value="reporter">អ្នកយកព័ត៌មាន (Reporter)</option>
+          <option value="admin">អ្នកគ្រប់គ្រង (Admin)</option>
+        </select>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="password">លេខសម្ងាត់</Label>
+        <Input id="password" name="password" type="password" placeholder="បញ្ជូលលេខសម្ងាត់..." required />
       </div>
 
       <div className="space-y-2">
@@ -78,7 +101,7 @@ export function UserForm() {
         </Label>
       </div>
 
-      <Button type="submit" className="w-full" disabled={loading}>
+      <Button type="submit" className="w-full font-heading" disabled={loading}>
         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {loading ? 'កំពុងរក្សាទុក...' : 'រក្សាទុកអ្នកប្រើប្រាស់'}
       </Button>

@@ -7,8 +7,33 @@ import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { login } from '@/app/actions/auth-actions';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+
 
 export default function LoginPage() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+    const result = await login(formData);
+
+    if (result.success) {
+      toast.success('ចូលប្រព័ន្ធបានជោគជ័យ');
+      router.push('/admin');
+      router.refresh();
+    } else {
+      toast.error('ឈ្មោះអ្នកប្រើប្រាស់ ឬលេខសម្ងាត់មិនត្រឹមត្រូវ');
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="bg-background relative min-h-screen overflow-hidden">
       <div className="from-background absolute -top-10 left-0 h-1/2 w-full rounded-b-full bg-gradient-to-b to-transparent blur"></div>
@@ -61,7 +86,9 @@ export default function LoginPage() {
             transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
           >
             <Card className="border-border/70 bg-card/40 w-full shadow-xl backdrop-blur-lg dark:shadow-none rounded-md">
-              <CardContent className="space-y-6 p-8">
+              <form onSubmit={handleSubmit}>
+                <CardContent className="space-y-6 p-8">
+
                 {/* Header */}
                 <motion.div
                   className="space-y-2 text-center"
@@ -82,9 +109,10 @@ export default function LoginPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.5, ease: 'easeOut' }}
                 >
-                  <Label htmlFor="email">អីមែល</Label>
-                  <Input id="email" type="email" placeholder="example@smenews.com" className="rounded-md" />
+                  <Label htmlFor="username">ឈ្មោះអ្នកប្រើប្រាស់</Label>
+                  <Input id="username" name="username" type="text" placeholder="admin" className="rounded-md" required />
                 </motion.div>
+
 
                 {/* Password Input */}
                 <motion.div
@@ -96,9 +124,12 @@ export default function LoginPage() {
                   <Label htmlFor="password">លេខសម្ងាត់</Label>
                   <Input
                     id="password"
+                    name="password"
                     type="password"
                     className="border-border border rounded-md"
+                    required
                   />
+
                 </motion.div>
 
                 {/* Continue Button */}
@@ -109,8 +140,11 @@ export default function LoginPage() {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                 >
-                  <Button className="w-full rounded-md font-medium">ចូលប្រព័ន្ធ</Button>
+                  <Button type="submit" className="w-full rounded-md font-medium" disabled={loading}>
+                    {loading ? 'កំពុងចូល...' : 'ចូលប្រព័ន្ធ'}
+                  </Button>
                 </motion.div>
+
 
                 {/* Divider */}
                 <motion.div
@@ -167,7 +201,8 @@ export default function LoginPage() {
                     <Link href="#" className="underline hover:text-primary transition-colors">លក្ខខណ្ឌប្រើប្រាស់</Link> និង <Link href="#" className="underline hover:text-primary transition-colors">គោលការណ៍ឯកជនភាព</Link> របស់យើង។
                   </p>
                 </motion.div>
-              </CardContent>
+                </CardContent>
+              </form>
             </Card>
           </motion.div>
         </motion.div>

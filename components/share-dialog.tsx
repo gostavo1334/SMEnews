@@ -56,14 +56,18 @@ export function ShareDialog({ title }: { title: string }) {
 
   return (
     <Dialog>
-      <DialogTrigger render={<Button variant="ghost" size="icon" className="size-8 rounded-full" />}>
-        <Share2 className="size-4" />
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button variant="ghost" size="icon" className="size-8 rounded-full">
+            <Share2 className="size-4" />
+          </Button>
+        }
+      />
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>ចែករំលែកអត្ថបទនេះ</DialogTitle>
+        <DialogHeader className="text-left">
+          <DialogTitle className="text-xl">ចែករំលែកអត្ថបទ</DialogTitle>
           <DialogDescription>
-            ចែករំលែកអត្ថបទនេះទៅកាន់បណ្តាញសង្គមរបស់អ្នក
+            ជ្រើសរើសបណ្តាញសង្គមដែលអ្នកចង់ចែករំលែក
           </DialogDescription>
         </DialogHeader>
         <div className="flex items-center space-x-2 py-4">
@@ -82,14 +86,14 @@ export function ShareDialog({ title }: { title: string }) {
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           </Button>
         </div>
-        <div className="flex justify-center gap-4 pt-2 border-t">
-          <Button onClick={shareFacebook} variant="outline" className="w-full flex items-center gap-2 text-[#1877F2] hover:text-[#1877F2] hover:bg-[#1877F2]/10 dark:hover:bg-[#1877F2]/20">
-            <FacebookIcon className="size-5" />
-            Facebook
+        <div className="grid grid-cols-2 gap-3 pt-4 border-t">
+          <Button onClick={shareFacebook} variant="outline" className="flex items-center justify-center gap-2 text-[#1877F2] border-[#1877F2]/20 hover:bg-[#1877F2]/10 hover:border-[#1877F2]/30 font-medium h-11">
+            <FacebookIcon className="size-5 fill-current" />
+            <span>Facebook</span>
           </Button>
-          <Button onClick={shareTelegram} variant="outline" className="w-full flex items-center gap-2 text-[#0088cc] hover:text-[#0088cc] hover:bg-[#0088cc]/10 dark:hover:bg-[#0088cc]/20">
-            <Send className="size-5" />
-            Telegram
+          <Button onClick={shareTelegram} variant="outline" className="flex items-center justify-center gap-2 text-[#24A1DE] border-[#24A1DE]/20 hover:bg-[#24A1DE]/10 hover:border-[#24A1DE]/30 font-medium h-11">
+            <Send className="size-5 fill-current" />
+            <span>Telegram</span>
           </Button>
         </div>
       </DialogContent>

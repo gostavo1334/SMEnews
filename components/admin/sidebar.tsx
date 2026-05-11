@@ -14,7 +14,11 @@ import {
   CalendarClock, 
   UserPlus, 
   Settings,
+  FileEdit,
+  HeartHandshake,
+  LogOut
 } from 'lucide-react'
+import { logout } from '@/app/actions/auth-actions'
 import {
   Sidebar,
   SidebarContent,
@@ -35,17 +39,21 @@ const navItems = [
   { title: 'Analytics', href: '/admin', icon: BarChart3 },
   { title: 'Create Post', href: '/admin/create', icon: FilePlus },
   { title: 'Post Lists', href: '/admin/posts', icon: FileText },
-  { title: 'Vocabulary', href: '/admin/vocabulary', icon: BookOpen },
-  { title: 'Document', href: '/admin/documents', icon: FileDown },
   { title: 'Category', href: '/admin/category', icon: FolderTree },
   { title: 'Control Ads', href: '/admin/ads', icon: Megaphone },
+  { title: 'Sponsors', href: '/admin/sponsors', icon: HeartHandshake },
+  { title: 'Drafts', href: '/admin/drafts', icon: FileEdit },
   { title: 'Schedule', href: '/admin/schedule', icon: CalendarClock },
-  { title: 'Add User', href: '/admin/users', icon: UserPlus },
-  { title: 'Settings', href: '/admin/settings', icon: Settings },
+  { title: 'Add User', href: '/admin/users', icon: UserPlus, adminOnly: true },
 ]
 
-export function AdminSidebar() {
+export function AdminSidebar({ role }: { role: string }) {
   const pathname = usePathname()
+
+  const filteredNavItems = navItems.filter(item => {
+    if (item.adminOnly && role !== 'admin') return false
+    return true
+  })
 
   return (
     <Sidebar collapsible="icon">
@@ -79,7 +87,7 @@ export function AdminSidebar() {
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => {
+              {filteredNavItems.map((item) => {
                 const isActive = pathname === item.href
                 return (
                   <SidebarMenuItem key={item.href}>
@@ -99,10 +107,16 @@ export function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="p-4 border-t space-y-2">
         <div className="flex items-center justify-center">
           <ModeToggle />
         </div>
+        <form action={logout}>
+          <button type="submit" className="flex items-center w-full gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 rounded-md transition-colors">
+            <LogOut className="size-4" />
+            <span>ចាកចេញ (Logout)</span>
+          </button>
+        </form>
       </SidebarFooter>
 
       <SidebarRail />

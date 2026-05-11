@@ -285,8 +285,7 @@ export const getHomePageData = cache(async (page: number = 1) => {
               createdAt: true,
               category: true,
               author: true,
-              metaDesc: true,
-              content: true
+              metaDesc: true
             },
             orderBy: { publishedAt: 'desc' },
             take: take,
@@ -305,8 +304,7 @@ export const getHomePageData = cache(async (page: number = 1) => {
               createdAt: true,
               category: true,
               author: true,
-              metaDesc: true,
-              content: true
+              metaDesc: true
             },
             orderBy: { createdAt: 'desc' },
             take: take,
@@ -357,8 +355,7 @@ export const getPopularPosts = cache(async () => {
         createdAt: true,
         category: true,
         author: true,
-        metaDesc: true,
-        content: true
+        metaDesc: true
       },
       orderBy: { createdAt: 'desc' },
       take: 5
@@ -402,8 +399,7 @@ export const getPostsByCategory = cache(async (slug: string, page: number = 1) =
           createdAt: true,
           category: true,
           author: true,
-          metaDesc: true,
-          content: true
+          metaDesc: true
         },
         orderBy: { publishedAt: 'desc' },
         take: limit,

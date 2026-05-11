@@ -7,7 +7,7 @@ import { Pagination } from '@/components/pagination'
 import Image from 'next/image'
 import { Category, PostWithRelations, Advertisement } from '@/types/prisma'
 
-export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -39,10 +39,6 @@ async function AdBeforePagination() {
   )
 }
 
-export async function generateStaticParams() {
-  const categories = await getCategories()
-  return categories.map((cat: Category) => ({ slug: cat.slug }))
-}
 
 async function CategoryPostsGrid({ slug, categoryName, page }: { slug: string, categoryName: string, page: number }) {
   const { posts, pagination } = await getPostsByCategory(slug, page)

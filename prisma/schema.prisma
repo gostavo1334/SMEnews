@@ -45,6 +45,7 @@ model Post {
   authorId      Int?
   author        User?     @relation(fields: [authorId], references: [id])
   category      Category? @relation(fields: [categoryId], references: [id])
+  reports       Report[]
 }
 
 model Advertisement {
@@ -56,4 +57,12 @@ model Advertisement {
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+model Report {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reason    String
+  status    String   @default("pending") // "pending", "reviewed", "resolved"
+  createdAt DateTime @default(now())
 }

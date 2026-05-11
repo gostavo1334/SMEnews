@@ -16,7 +16,8 @@ import {
   Settings,
   FileEdit,
   HeartHandshake,
-  LogOut
+  LogOut,
+  AlertTriangle
 } from 'lucide-react'
 import { logout } from '@/app/actions/auth-actions'
 import {
@@ -44,6 +45,7 @@ const navItems = [
   { title: 'Sponsors', href: '/admin/sponsors', icon: HeartHandshake },
   { title: 'Drafts', href: '/admin/drafts', icon: FileEdit },
   { title: 'Schedule', href: '/admin/schedule', icon: CalendarClock },
+  { title: 'Reports', href: '/admin/reports', icon: AlertTriangle, adminOnly: true },
   { title: 'Add User', href: '/admin/users', icon: UserPlus, adminOnly: true },
 ]
 

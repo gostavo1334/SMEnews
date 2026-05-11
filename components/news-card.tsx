@@ -22,6 +22,7 @@ interface NewsCardProps {
       avatar?: string
     }
     summary?: string
+    content?: string
   }
   variant?: 'large' | 'small' | 'horizontal'
   className?: string
@@ -30,6 +31,8 @@ interface NewsCardProps {
 export function NewsCard({ news, variant = 'large', className }: NewsCardProps) {
   const router = useRouter()
   const newsHref = `/news/${news.slug || news.id}`
+  const rawContent = news.content?.replace(/<[^>]*>/g, ' ').trim()
+  const displaySummary = news.summary || (rawContent && rawContent.length > 10 ? rawContent.substring(0, 160) : null)
 
   if (variant === 'horizontal' || variant === 'small') {
     return (
@@ -58,11 +61,6 @@ export function NewsCard({ news, variant = 'large', className }: NewsCardProps) 
               <h4 className="text-sm font-medium leading-snug group-hover:text-primary transition-colors line-clamp-2">
                 {news.title}
               </h4>
-              {news.summary && (
-                <p className="text-[10px] text-muted-foreground line-clamp-2 mt-0.5">
-                  {news.summary}
-                </p>
-              )}
               <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Clock className="size-2.5" />
@@ -119,9 +117,9 @@ export function NewsCard({ news, variant = 'large', className }: NewsCardProps) 
           <h3 className="text-base font-medium leading-tight group-hover:text-primary transition-colors line-clamp-2 mb-2">
             {news.title}
           </h3>
-          {news.summary && (
-            <p className="text-xs text-muted-foreground line-clamp-3 mt-1">
-              {news.summary}
+          {displaySummary && (
+            <p className="text-sm text-muted-foreground line-clamp-2 mt-2 leading-relaxed">
+              {displaySummary}
             </p>
           )}
         </div>

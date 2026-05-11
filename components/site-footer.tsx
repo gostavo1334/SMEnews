@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { useTheme } from "next-themes";
 import {
   Code,
   User2,
@@ -40,10 +41,24 @@ export function SiteFooter() {
   if (!mounted) return null;
 
   return (
-    <footer id="site-footer" className="relative mt-20 w-full overflow-hidden bg-card/50 border-t">
-      <div className="absolute inset-0 -z-10">
+    <>
+      {/* 25 PROVINCES BAR - ABOVE FOOTER */}
+      <div className="w-full px-0 mt-[60px]">
+        <Image 
+          src="/Logo/25province.png" 
+          alt="25 Provinces of Cambodia" 
+          width={1920}
+          height={300}
+          className="w-full h-auto"
+          priority
+        />
+      </div>
+
+      <footer id="site-footer" className="relative w-full overflow-hidden bg-[#1a1e86] text-white">
+
+      <div className="absolute inset-0 -z-10 opacity-10">
         <Waves
-          lineColor="#3b82f6"
+          lineColor="#ffffff"
           backgroundColor="transparent"
           waveSpeedX={0.0125}
           waveSpeedY={0.01}
@@ -56,51 +71,90 @@ export function SiteFooter() {
           yGap={64}
         />
       </div>
-      <div className="animate-energy-flow via-primary h-px w-full bg-gradient-to-r from-transparent to-transparent" />
-      <div className="relative w-full px-5">
-        {/* Top Section */}
-        <div className="py-12">
-          <div className="space-y-6 flex flex-col items-center text-center">
-            <Link href="/" className="inline-flex items-center gap-3">
+      
+      <div className="container mx-auto px-6 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+          
+          {/* LEFT: LOGO & DESCRIPTION */}
+          <div className="md:col-span-4 space-y-4">
+            <Link href="/" className="inline-block">
               <Image
-                src="/Logo/logo.png"
-                alt="SME NEWS Logo"
-                width={300}
-                height={100}
-                className="h-32 w-auto object-contain"
+                src="/Logo/logo4x4.png"
+                alt="SME NEWS"
+                width={60}
+                height={60}
+                className="rounded-lg shadow-lg border border-white/20"
               />
             </Link>
-            <p className="text-black dark:text-white text-xl max-w-2xl leading-relaxed font-medium">
-              ប្រភពព័ត៌មានអាជីវកម្ម នវានុវត្តន៍ និងបច្ចេកវិទ្យាឈានមុខគេក្នុងប្រទេសកម្ពុជា។ ផ្តល់ជូននូវព័ត៌មានពិត និងរហ័សទាន់ចិត្ត។
-            </p>
+            <div className="space-y-3">
+              <h3 className="text-2xl font-bold tracking-tight">SME NEWS</h3>
+              <p className="text-white/80 text-base leading-relaxed max-w-sm font-normal">
+                ប្រភពព័ត៌មានអាជីវកម្ម នវានុវត្តន៍ និងបច្ចេកវិទ្យាឈានមុខគេក្នុងប្រទេសកម្ពុជា។ យើងផ្តល់ជូននូវព័ត៌មានពិត រហ័ស និងមានទំនុកចិត្តសម្រាប់សហគ្រិនគ្រប់រូប។
+              </p>
+            </div>
           </div>
-        </div>
-        {/* Bottom Section */}
-        <div className="animate-rotate-3d via-primary h-px w-full bg-gradient-to-r from-transparent to-transparent" />
-        <div className="text-muted-foreground container m-auto flex flex-col items-center justify-between gap-4 p-4 text-xs md:flex-row md:px-0 md:text-sm">
-          <p className="">
-            &copy; {currentYear} SME NEWS | រក្សាសិទ្ធិគ្រប់យ៉ាង
-          </p>
-          <div className="flex items-center gap-4">
-            {data().bottomLinks.map(({ href, label }) => (
-              <Link key={label} href={href} className="hover:text-foreground">
-                {label}
-              </Link>
-            ))}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              render={<Link href="/login" />}
-              className="h-8 gap-1.5 text-muted-foreground hover:text-foreground"
-            >
-              <Lock className="h-3.5 w-3.5" />
-              <span>សម្រាប់បុគ្គលិក</span>
-            </Button>
+
+          {/* MIDDLE: LINKS */}
+          <div className="md:col-span-4 grid grid-cols-2 gap-6 pt-4">
+            <div className="space-y-6">
+              <h4 className="text-sm font-medium uppercase tracking-widest text-white">មាតិកាពេញនិយម</h4>
+              <ul className="space-y-3 text-base font-normal">
+                <li><Link href="/category/sme" className="hover:text-sky-300 transition-colors">អាជីវកម្ម SME</Link></li>
+                <li><Link href="/category/tech" className="hover:text-sky-300 transition-colors">បច្ចេកវិទ្យា</Link></li>
+                <li><Link href="/category/finance" className="hover:text-sky-300 transition-colors">ហិរញ្ញវត្ថុ</Link></li>
+                <li><Link href="/category/commerce" className="hover:text-sky-300 transition-colors">ពាណិជ្ជកម្ម</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-6">
+              <h4 className="text-sm font-medium uppercase tracking-widest text-white">អំពីយើង</h4>
+              <ul className="space-y-3 text-base font-normal">
+                <li><Link href="#" className="hover:text-sky-300 transition-colors">អំពី SME NEWS</Link></li>
+                <li><Link href="#" className="hover:text-sky-300 transition-colors">ទំនាក់ទំនង</Link></li>
+                <li><Link href="/login" className="hover:text-sky-300 transition-colors flex items-center gap-2 font-medium"><Lock className="size-4" /> សម្រាប់បុគ្គលិក</Link></li>
+              </ul>
+            </div>
           </div>
+
+          {/* RIGHT: FACEBOOK & QR */}
+          <div className="md:col-span-4 space-y-6 pt-4">
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="bg-white p-2 rounded-lg shrink-0">
+                <Image 
+                  src="/Logo/qrqr.png" 
+                  alt="QR Code" 
+                  width={80} 
+                  height={80} 
+                  className="rounded-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-bold text-white/90 uppercase tracking-wider">ស្កេនដើម្បីផ្សព្វផ្សាយ</p>
+                <p className="text-xs text-white/50 leading-relaxed font-normal">ស្កេន QR Code ដើម្បីទទួលបានព័ត៌មានបន្ថែមអំពីការផ្សព្វផ្សាយពាណិជ្ជកម្ម។</p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="size-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 cursor-pointer transition-colors border border-white/10">
+                <Send className="size-4 text-white/60" />
+              </div>
+              <div className="size-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 cursor-pointer transition-colors border border-white/10">
+                <MessageCircle className="size-4 text-white/60" />
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        <span className="from-primary/20 absolute inset-x-0 bottom-0 left-0 -z-10 h-1/3 w-full bg-gradient-to-t" />
+        {/* BOTTOM BAR */}
+        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-white/40 uppercase tracking-widest font-medium">
+          <p className="font-normal">&copy; {currentYear} SME NEWS | រក្សាសិទ្ធិគ្រប់យ៉ាង</p>
+          <div className="flex gap-6">
+            <Link href="#" className="hover:text-white transition-colors">គោលការណ៍ឯកជនភាព</Link>
+            <Link href="#" className="hover:text-white transition-colors">លក្ខខណ្ឌប្រើប្រាស់</Link>
+          </div>
+        </div>
       </div>
     </footer>
+    </>
   );
 }

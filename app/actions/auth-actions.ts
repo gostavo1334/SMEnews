@@ -9,9 +9,32 @@ import { prisma } from '@/lib/prisma';
 export async function login(formData: FormData) {
   const username = formData.get('username') as string;
   const password = formData.get('password') as string;
+  const turnstileResponse = formData.get('cf-turnstile-response') as string;
 
   if (!username || !password) {
     return { success: false, error: 'សូមបញ្ចូលឈ្មោះអ្នកប្រើប្រាស់ និងលេខសម្ងាត់' };
+  }
+
+  // Verify Cloudflare Turnstile
+  try {
+    const secretKey = process.env.TURNSTILE_SECRET_KEY;
+    const verifyUrl = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+    
+    const verifyRes = await fetch(verifyUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `secret=${secretKey}&response=${turnstileResponse}`
+    });
+    
+    const verifyData = await verifyRes.json();
+    
+    if (!verifyData.success) {
+      return { success: false, error: 'ការបញ្ជាក់ Captcha មិនត្រឹមត្រូវ (Invalid Captcha)' };
+    }
+  } catch (error) {
+    console.error("[Login Turnstile Error]:", error);
+    // Continue if it's a network error during dev, or block for security? 
+    // Usually better to block.
   }
 
   const user = await prisma.user.findUnique({

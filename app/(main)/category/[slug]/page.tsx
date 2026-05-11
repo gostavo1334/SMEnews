@@ -1,13 +1,13 @@
 import React, { Suspense } from 'react'
 import { Metadata } from 'next'
-import { getCategories, getPostsByCategory } from '@/app/actions/post-actions'
+import { getCategories, getPostsByCategory, getAds } from '@/app/actions/post-actions'
 import { NewsCard } from '@/components/news-card'
 import { notFound } from 'next/navigation'
 import { Pagination } from '@/components/pagination'
 import Image from 'next/image'
-import { Category, PostWithRelations } from '@/types/prisma'
+import { Category, PostWithRelations, Advertisement } from '@/types/prisma'
 
-export const revalidate = 3600
+export const revalidate = 0
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -25,6 +25,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
+async function AdBeforePagination() {
+  const ads = await getAds()
+  const ad = ads.find((ad: Advertisement) => ad.active && (ad.position === 'before_pagination' || ad.position === 'after_article'))
+  if (!ad) return null
+  return (
+    <a href={ad.linkUrl || "#"} target="_blank" rel="noreferrer" className="block w-full mt-8 mb-8">
+      <div className="relative w-full aspect-[1920/220] rounded-md overflow-hidden border border-border/40 shadow-sm">
+        <Image src={ad.imageUrl} alt={ad.title} fill unoptimized sizes="1000px" className="object-cover" />
+        <div className="absolute inset-0 shiny-effect pointer-events-none" />
+      </div>
+    </a>
+  )
+}
+
 export async function generateStaticParams() {
   const categories = await getCategories()
   return categories.map((cat: Category) => ({ slug: cat.slug }))
@@ -39,17 +53,21 @@ async function CategoryPostsGrid({ slug, categoryName, page }: { slug: string, c
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {posts.map((post: PostWithRelations) => (
-          <NewsCard 
-            key={post.id} 
+          <NewsCard
+            key={post.id}
             news={{
               id: post.id, slug: post.slug, title: post.title, category: categoryName, categorySlug: slug,
               date: new Date(post.publishedAt).toLocaleDateString('km-KH'),
               image: post.featuredImage || "https://images.unsplash.com/photo-1540959733332-e94e270b2d42?w=800&q=80",
-              summary: post.metaDesc ?? undefined
-            }} 
+              summary: post.metaDesc ?? undefined,
+              content: post.content ?? undefined
+            }}
           />
         ))}
       </div>
+      <Suspense fallback={null}>
+        <AdBeforePagination />
+      </Suspense>
       <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} baseUrl={`/category/${slug}`} />
     </>
   )

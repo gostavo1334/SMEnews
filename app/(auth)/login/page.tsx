@@ -8,14 +8,35 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { login } from '@/app/actions/auth-actions';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-
+import { useTheme } from 'next-themes';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    // Force render when component mounts
+    if ((window as any).turnstile) {
+      setTimeout(() => {
+        try {
+          (window as any).turnstile.render('.cf-turnstile')
+        } catch (e) {
+          // Already rendered or other minor error
+        }
+      }, 300)
+    }
+  }, []);
+
+  // Determine logo source
+  const logoSrc = mounted && (theme === 'dark' || resolvedTheme === 'dark')
+    ? "/Logo/File-Slogan SME NEWS-Dark Mode.png"
+    : "/Logo/File-Slogan SME NEWS-01.png";
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,7 +75,7 @@ export default function LoginPage() {
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
             >
               <Image
-                src="/Logo/logo.png"
+                src={logoSrc}
                 alt="SME NEWS Logo"
                 width={400}
                 height={150}
@@ -130,6 +151,16 @@ export default function LoginPage() {
                     required
                   />
 
+                </motion.div>
+
+                {/* Turnstile Widget */}
+                <motion.div
+                  className="flex justify-center"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.65, ease: 'easeOut' }}
+                >
+                  <div className="cf-turnstile" data-sitekey="1x00000000000000000000AA" />
                 </motion.div>
 
                 {/* Continue Button */}

@@ -12,11 +12,10 @@ const pool = new pg.Pool({
 });
 const adapter = new PrismaPg(pool);
 
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    adapter,
-    log: ["query"],
-  });
+export const prisma = new PrismaClient({
+  adapter,
+  log: ["query"],
+});
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Last Generated: 2026-05-11 10:17 AM

@@ -57,9 +57,9 @@ export async function createPost(formData: FormData) {
 
   // Invalidate cache
   for (let i = 1; i <= 5; i++) {
-    await redis.del(`home_page_data:p${i}`)
+    await redis.del(`home_page_v2:p${i}`)
   }
-  await redis.del('popular_posts')
+  await redis.del('popular_posts_v2')
   await redis.del('dashboard_data')
   await redis.del('admin_posts:p1:l10')
   
@@ -267,7 +267,7 @@ export const getHomePageData = cache(async (page: number = 1) => {
   const take = page === 1 ? 13 : limit
   const skip = page === 1 ? 0 : (page - 1) * limit
 
-  return getCachedData(`home_page_data:p${page}`, async () => {
+  return getCachedData(`home_page_v2:p${page}`, async () => {
     const [latestPosts, totalCount] = await Promise.all([
       (async () => {
         try {
@@ -285,7 +285,8 @@ export const getHomePageData = cache(async (page: number = 1) => {
               createdAt: true,
               category: true,
               author: true,
-              metaDesc: true
+              metaDesc: true,
+              content: true
             },
             orderBy: { publishedAt: 'desc' },
             take: take,
@@ -304,7 +305,8 @@ export const getHomePageData = cache(async (page: number = 1) => {
               createdAt: true,
               category: true,
               author: true,
-              metaDesc: true
+              metaDesc: true,
+              content: true
             },
             orderBy: { createdAt: 'desc' },
             take: take,
@@ -336,11 +338,11 @@ export const getHomePageData = cache(async (page: number = 1) => {
         totalCount
       }
     }
-  }, 3600)
+  }, 60)
 })
 
 export const getPopularPosts = cache(async () => {
-  return getCachedData('popular_posts', async () => {
+  return getCachedData('popular_posts_v2', async () => {
     const posts = await prisma.post.findMany({
       where: { 
         published: true,
@@ -355,14 +357,15 @@ export const getPopularPosts = cache(async () => {
         createdAt: true,
         category: true,
         author: true,
-        metaDesc: true
+        metaDesc: true,
+        content: true
       },
       orderBy: { createdAt: 'desc' },
       take: 5
     })
   
     return posts
-  }, 3600)
+  }, 60)
 })
 
 export const getPostBySlug = cache(async (slug: string) => {
@@ -374,7 +377,7 @@ export const getPostBySlug = cache(async (slug: string) => {
         author: true,
       }
     })
-  }, 3600)
+  }, 60)
 })
 
 export const getPostsByCategory = cache(async (slug: string, page: number = 1) => {
@@ -399,7 +402,8 @@ export const getPostsByCategory = cache(async (slug: string, page: number = 1) =
           createdAt: true,
           category: true,
           author: true,
-          metaDesc: true
+          metaDesc: true,
+          content: true
         },
         orderBy: { publishedAt: 'desc' },
         take: limit,
@@ -422,16 +426,17 @@ export const getPostsByCategory = cache(async (slug: string, page: number = 1) =
         totalCount
       }
     }
-  // }, 3600)
+  // }, 60)
 })
 
-export const getAds = cache(async () => {
-  return getCachedData('site_ads', async () => {
-    return await prisma.advertisement.findMany({
+export const getAds = async () => {
+  return getCachedData('site_ads_FINAL_v5', async () => {
+    const ads = await prisma.advertisement.findMany({
       orderBy: { createdAt: 'desc' }
     })
-  }, 31536000) // 1 year cache, manual invalidation handles updates
-})
+    return ads
+  }, 60)
+}
 
 export async function createAd(formData: FormData) {
   try {
@@ -477,7 +482,7 @@ export async function createAd(formData: FormData) {
       }
     })
 
-    await redis.del('site_ads')
+    await redis.del('site_ads_FINAL_v5')
     revalidatePath("/admin/ads")
     revalidatePath("/")
     return ad
@@ -492,7 +497,7 @@ export async function toggleAdStatus(id: number, active: boolean) {
     where: { id },
     data: { active }
   })
-  await redis.del('site_ads')
+  await redis.del('site_ads_FINAL_v5')
   revalidatePath("/admin/ads")
   revalidatePath("/")
   return ad
@@ -502,7 +507,8 @@ export async function deleteAd(id: number) {
   await prisma.advertisement.delete({
     where: { id }
   })
-  await redis.del('site_ads')
+  
+  await redis.del('site_ads_FINAL_v5')
   revalidatePath("/admin/ads")
   revalidatePath("/")
 }
@@ -551,9 +557,9 @@ export async function updatePost(id: number, formData: FormData) {
 
   // Invalidate cache
   for (let i = 1; i <= 5; i++) {
-    await redis.del(`home_page_data:p${i}`)
+    await redis.del(`home_page_v2:p${i}`)
   }
-  await redis.del('popular_posts')
+  await redis.del('popular_posts_v2')
   await redis.del('dashboard_data')
   await redis.del('admin_posts:p1:l10')
   await redis.del(`post:${post.slug}`)
@@ -581,9 +587,9 @@ export async function deletePost(id: number) {
 
   // Invalidate cache
   for (let i = 1; i <= 5; i++) {
-    await redis.del(`home_page_data:p${i}`)
+    await redis.del(`home_page_v2:p${i}`)
   }
-  await redis.del('popular_posts')
+  await redis.del('popular_posts_v2')
   await redis.del('dashboard_data')
   await redis.del('admin_posts:p1:l10')
   await redis.del(`post:${post.slug}`)
@@ -615,9 +621,9 @@ export async function publishPostNow(id: number) {
 
   // Invalidate cache
   for (let i = 1; i <= 5; i++) {
-    await redis.del(`home_page_data:p${i}`)
+    await redis.del(`home_page_v2:p${i}`)
   }
-  await redis.del('popular_posts')
+  await redis.del('popular_posts_v2')
   await redis.del('dashboard_data')
   await redis.del('admin_posts:p1:l10')
   await redis.del(`post:${post.slug}`)
@@ -635,4 +641,66 @@ export async function publishPostNow(id: number) {
   revalidatePath("/", "layout")
   revalidatePath(`/news/${post.slug}`)
   return post
+}
+
+export async function submitReport(postId: number, reason: string, captchaToken: string) {
+  try {
+    // Verify Cloudflare Turnstile
+    const secretKey = process.env.TURNSTILE_SECRET_KEY
+    const verifyUrl = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+    
+    const verifyRes = await fetch(verifyUrl, { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `secret=${secretKey}&response=${captchaToken}`
+    })
+    const verifyData = await verifyRes.json()
+
+    if (!verifyData.success) {
+      return { success: false, error: "ការបញ្ជាក់ Captcha មិនត្រឹមត្រូវ (Invalid Captcha)" }
+    }
+
+    const report = await prisma.report.create({
+      data: {
+        postId,
+        reason,
+        status: 'pending'
+      }
+    })
+    return { success: true, report }
+  } catch (error) {
+    console.error("[submitReport] Error:", error)
+    return { success: false, error: "Failed to submit report" }
+  }
+}
+
+export async function getReports() {
+  return await prisma.report.findMany({
+    include: {
+      post: {
+        select: {
+          title: true,
+          slug: true
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
+}
+
+export async function updateReportStatus(id: number, status: string) {
+  await prisma.report.update({
+    where: { id },
+    data: { status }
+  })
+  revalidatePath("/admin/reports")
+}
+
+export async function deleteReport(id: number) {
+  await prisma.report.delete({
+    where: { id }
+  })
+  revalidatePath("/admin/reports")
 }

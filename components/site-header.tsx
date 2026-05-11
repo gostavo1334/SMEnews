@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/sheet"
 import { SponsorCube } from "@/components/sponsor-cube"
 import { ModeToggle } from "@/components/mode-toggle"
+import { useTheme } from "next-themes"
 
 const navItems = [
   { title: "ទំព័រដើម", href: "/" },
@@ -49,6 +50,12 @@ const navItems = [
 
 export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { topBannerAd?: any, sponsorAds?: any[], categories?: any[] }) {
   const [open, setOpen] = React.useState(false);
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const rootCategories = categories.filter(cat => !cat.parentId && cat.name !== "វីដេអូ" && cat.name !== "ទំព័រដើម" && cat.name !== "ឯកសារ")
   
@@ -69,6 +76,11 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
     { title: "ទាញយកឯកសារ", href: "/downloads" },
   ]
 
+  // Determine logo source
+  const logoSrc = mounted && (theme === 'dark' || resolvedTheme === 'dark')
+    ? "/Logo/File-Slogan SME NEWS-Dark Mode.png"
+    : "/Logo/File-Slogan SME NEWS-01.png";
+
   return (
     <>
       {/* TOP BAR STONE */}
@@ -78,7 +90,7 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
             <Link href="/">
               <div className="flex items-center gap-2">
                 <Image 
-                  src="/Logo/logo.png" 
+                  src={logoSrc} 
                   alt="SME NEWS" 
                   width={320} 
                   height={100} 

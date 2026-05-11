@@ -133,6 +133,30 @@
   transform: rotate(180deg);
 }
 
+@utility shiny-effect {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -150%;
+    left: -150%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0) 40%,
+      rgba(255, 255, 255, 0.25) 50%,
+      rgba(255, 255, 255, 0) 60%
+    );
+    transform: rotate(10deg);
+    animation: shine-sweep 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    z-index: 20;
+    pointer-events: none;
+  }
+}
+
 @layer utilities {
   .animate-energy-flow {
     animation: energy-flow 4s linear infinite;
@@ -141,6 +165,15 @@
 
   .animate-rotate-3d {
     animation: rotate3d 8s linear infinite;
+  }
+}
+
+@keyframes shine-sweep {
+  0% { 
+    transform: translate(-50%, -50%) rotate(10deg); 
+  }
+  100% { 
+    transform: translate(50%, 50%) rotate(10deg); 
   }
 }
 

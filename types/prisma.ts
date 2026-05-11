@@ -44,3 +44,15 @@ export type PostWithRelations = Post & {
   category?: Category | null
   author?: User | null
 }
+
+export interface Report {
+  id: number
+  postId: number
+  reason: string
+  status: string
+  createdAt: Date | string
+  post: {
+    title: string
+    slug: string
+  }
+}

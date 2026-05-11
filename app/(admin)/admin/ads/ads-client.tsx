@@ -42,9 +42,11 @@ export default function AdsPage({ initialAds = [] }: { initialAds: Ad[] }) {
     { value: 'sidebar_left_2', label: 'Sidebar Left - Slot 2 (398x1183)' },
     { value: 'sidebar_right_1', label: 'Sidebar Right - Slot 1 (398x1183)' },
     { value: 'sidebar_right_2', label: 'Sidebar Right - Slot 2 (398x1183)' },
-    { value: 'after_popular', label: 'After Popular News (2480x2150)' },
-    { value: 'after_article', label: 'After News Content (1920x200)' },
-    { value: 'top_banner', label: 'Top Header GIF (600x100)' },
+    { value: 'before_popular', label: 'Before Popular News (Sidebar)' },
+    { value: 'after_popular', label: 'After Popular News (Sidebar)' },
+    { value: 'before_pagination', label: 'Before Pagination (Homepage)' },
+    { value: 'after_article', label: 'After News Content (Article Page)' },
+    { value: 'top_banner', label: 'Top Header GIF (Header)' },
     { value: 'sponsor_cube', label: 'Top Header Sponsor Cube (Up to 6 images) (80x80)' },
   ]
 

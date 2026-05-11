@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import { Metadata } from 'next'
 import Image from 'next/image'
-import { Clock, Share2, User, Bookmark } from 'lucide-react'
+import { Clock, Share2, User, AlertTriangle } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { getPostBySlug, getAds, getPopularPosts, getPosts } from '@/app/actions/
 import { notFound } from 'next/navigation'
 import { ShareDialog } from '@/components/share-dialog'
 import { PostContentViewer } from '@/components/post-content-viewer'
+import { ReportDialog } from '@/components/report-dialog'
 import { Advertisement, PostWithRelations } from '@/types/prisma'
 
 export const revalidate = 3600
@@ -69,6 +70,7 @@ async function AdAfterArticle() {
     <a href={ad.linkUrl || "#"} target="_blank" rel="noreferrer" className="block w-full mt-8">
       <div className="relative w-full aspect-[1920/200] rounded-md overflow-hidden border border-border/40">
         <Image src={ad.imageUrl} alt={ad.title} fill unoptimized sizes="1000px" className="object-cover" />
+        <div className="absolute inset-0 shiny-effect pointer-events-none" />
       </div>
     </a>
   )
@@ -96,7 +98,10 @@ export default async function NewsDetailPage({ params }: PageProps) {
           <h1 className="text-3xl md:text-4xl font-medium leading-tight">{post.title}</h1>
           <div className="flex items-center justify-between py-2 border-y border-border/40 text-sm text-muted-foreground">
             <div className="flex items-center gap-1.5"><Clock className="size-4" />{formattedDate}</div>
-            <div className="flex items-center gap-2"><ShareDialog title={post.title} /><Button variant="ghost" size="icon" className="size-8 rounded-full"><Bookmark className="size-4" /></Button></div>
+            <div className="flex items-center gap-2">
+              <ShareDialog title={post.title} />
+              <ReportDialog postId={post.id} postTitle={post.title} />
+            </div>
           </div>
         </div>
         <PostContentViewer 

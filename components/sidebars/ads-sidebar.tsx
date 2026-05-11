@@ -24,6 +24,7 @@ export async function AdsSidebar({ position }: { position: 'sidebar_left' | 'sid
                   sizes="160px"
                   className="object-cover" 
                 />
+                <div className="absolute inset-0 shiny-effect pointer-events-none" />
               </div>
             </a>
           ))

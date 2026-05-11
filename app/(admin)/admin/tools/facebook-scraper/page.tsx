@@ -50,16 +50,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { scrapeFacebookComments } from "@/app/actions/scraper-actions"
-
-interface Comment {
-  id: string
-  authorName: string
-  authorAvatar: string
-  content: string
-  timestamp: string
-  likes: number
-}
+import { scrapeFacebookComments, type Comment } from "@/app/actions/scraper-actions"
 
 export default function FacebookScraperPage() {
   const [url, setUrl] = React.useState("")

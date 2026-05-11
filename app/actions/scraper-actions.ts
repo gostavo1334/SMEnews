@@ -11,12 +11,12 @@ import { writeFileSync } from 'fs'
  * Specifically targets the logged-out modal view structure.
  */
 
-interface Comment {
+export interface Comment {
   id: string
   parentId: string | null
   authorName: string
   profileUrl: string
-  profileImage: string
+  authorAvatar: string
   content: string
   timestamp: string
   likes: number
@@ -90,7 +90,7 @@ export async function scrapeFacebookComments(postUrl: string): Promise<ScrapeRes
           parentId: null,
           authorName,
           profileUrl: authorLink?.href || "",
-          profileImage: article.querySelector('img')?.src || "",
+          authorAvatar: article.querySelector('img')?.src || "",
           content,
           timestamp: "Recently",
           likes: 0,

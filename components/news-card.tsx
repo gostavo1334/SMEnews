@@ -37,7 +37,7 @@ export function NewsCard({ news, variant = 'large', className }: NewsCardProps) 
   if (variant === 'horizontal' || variant === 'small') {
     return (
       <Link href={newsHref} className={cn("block group", className)}>
-        <Card className="group cursor-pointer border border-border/40 bg-card overflow-hidden p-2 rounded-md hover:border-primary/30 transition-all duration-300 dark:bg-white/[0.03] dark:border-white/10">
+        <Card className="group cursor-pointer border border-border/40 bg-card p-2 rounded-md hover:border-primary/30 transition-all duration-300 dark:bg-white/[0.03] dark:border-white/10">
           <div className="flex gap-3">
             <div className="relative size-20 flex-shrink-0 rounded-md overflow-hidden">
               <Image
@@ -48,7 +48,7 @@ export function NewsCard({ news, variant = 'large', className }: NewsCardProps) 
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
               />
             </div>
-            <div className="space-y-1 overflow-hidden">
+            <div className="space-y-1">
               <Badge 
                 onClick={(e) => {
                   e.preventDefault()
@@ -61,6 +61,11 @@ export function NewsCard({ news, variant = 'large', className }: NewsCardProps) 
               <h4 className="text-sm font-medium leading-snug group-hover:text-primary transition-colors line-clamp-2">
                 {news.title}
               </h4>
+              {displaySummary && (
+                <p className="text-[11px] text-muted-foreground line-clamp-2 leading-tight opacity-90 mt-1">
+                  {displaySummary}
+                </p>
+              )}
               <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Clock className="size-2.5" />
@@ -118,7 +123,7 @@ export function NewsCard({ news, variant = 'large', className }: NewsCardProps) 
             {news.title}
           </h3>
           {displaySummary && (
-            <p className="text-sm text-muted-foreground line-clamp-2 mt-2 leading-relaxed">
+            <p className="text-[13px] text-muted-foreground line-clamp-3 mt-1.5 leading-relaxed overflow-hidden">
               {displaySummary}
             </p>
           )}

@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'utfs.io',
+      },
     ],
   },
   experimental: {
@@ -58,8 +62,8 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com",
-              "connect-src 'self' https://*.supabase.co https://*.upstash.io https://api.telegram.org https://res.cloudinary.com https://challenges.cloudflare.com",
+              "img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com https://utfs.io",
+              "connect-src 'self' https://*.supabase.co https://*.upstash.io https://api.telegram.org https://res.cloudinary.com https://challenges.cloudflare.com https://utfs.io",
               "frame-src 'self' https://challenges.cloudflare.com",
               "object-src 'none'",
               "base-uri 'self'",

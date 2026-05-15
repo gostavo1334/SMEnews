@@ -46,6 +46,7 @@ const navItems = [
   { title: 'Sponsors', href: '/admin/sponsors', icon: HeartHandshake },
   { title: 'Drafts', href: '/admin/drafts', icon: FileEdit },
   { title: 'Schedule', href: '/admin/schedule', icon: CalendarClock },
+  { title: 'Books Control', href: '/admin/books', icon: BookOpen },
   { title: 'Reports', href: '/admin/reports', icon: AlertTriangle, adminOnly: true },
   { title: 'FB Scraper', href: '/admin/tools/facebook-scraper', icon: MessageSquare },
   { title: 'Add User', href: '/admin/users', icon: UserPlus, adminOnly: true },

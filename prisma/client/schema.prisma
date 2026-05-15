@@ -59,6 +59,7 @@ model Advertisement {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model Report {
   id        Int      @id @default(autoincrement())
   postId    Int
@@ -69,10 +70,10 @@ model Report {
 }
 
 model Book {
-  id          Int      @id @default(autoincrement())
-  title       String
-  coverImage  String?
-  fileUrl     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  title      String
+  coverImage String?
+  fileUrl    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

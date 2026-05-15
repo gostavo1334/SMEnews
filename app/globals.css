@@ -213,3 +213,4 @@
 .dark .ck.ck-button {
   color: var(--foreground) !important;
 }
+.no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

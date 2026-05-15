@@ -27,6 +27,7 @@ import {
 import { SponsorCube } from "@/components/sponsor-cube"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useTheme } from "next-themes"
+import { SearchAutocomplete } from "@/components/search-autocomplete"
 
 const navItems = [
   { title: "ទំព័រដើម", href: "/" },
@@ -222,13 +223,8 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
 
           {/* SEARCH & TOGGLE - ALWAYS VISIBLE */}
           <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="relative hidden lg:block">
-              <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-white/70" />
-              <Input
-                type="search"
-                placeholder="ស្វែងរក..."
-                className="pl-8 h-8 w-[150px] text-xs bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:w-[200px] focus:bg-white/20 transition-all"
-              />
+            <div className="hidden lg:block">
+              <SearchAutocomplete />
             </div>
             <ModeToggle className="text-white hover:bg-white/10" />
           </div>

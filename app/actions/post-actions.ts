@@ -57,9 +57,9 @@ export async function createPost(formData: FormData) {
 
   // Invalidate cache
   for (let i = 1; i <= 5; i++) {
-    await redis.del(`home_page_v2:p${i}`)
+    await redis.del(`home_page_v3:p${i}`)
   }
-  await redis.del('popular_posts_v2')
+  await redis.del('popular_posts_v3')
   await redis.del('dashboard_data')
   await redis.del('admin_posts:p1:l10')
   
@@ -267,7 +267,7 @@ export const getHomePageData = cache(async (page: number = 1) => {
   const take = page === 1 ? 13 : limit
   const skip = page === 1 ? 0 : (page - 1) * limit
 
-  return getCachedData(`home_page_v2:p${page}`, async () => {
+  return getCachedData(`home_page_v3:p${page}`, async () => {
     const [latestPosts, totalCount] = await Promise.all([
       (async () => {
         try {
@@ -285,7 +285,8 @@ export const getHomePageData = cache(async (page: number = 1) => {
               createdAt: true,
               category: true,
               author: true,
-              metaDesc: true
+              metaDesc: true,
+              content: true
             },
             orderBy: { publishedAt: 'desc' },
             take: take,
@@ -304,7 +305,8 @@ export const getHomePageData = cache(async (page: number = 1) => {
               createdAt: true,
               category: true,
               author: true,
-              metaDesc: true
+              metaDesc: true,
+              content: true
             },
             orderBy: { createdAt: 'desc' },
             take: take,
@@ -340,7 +342,7 @@ export const getHomePageData = cache(async (page: number = 1) => {
 })
 
 export const getPopularPosts = cache(async () => {
-  return getCachedData('popular_posts_v2', async () => {
+  return getCachedData('popular_posts_v3', async () => {
     const posts = await prisma.post.findMany({
       where: { 
         published: true,
@@ -355,7 +357,8 @@ export const getPopularPosts = cache(async () => {
         createdAt: true,
         category: true,
         author: true,
-        metaDesc: true
+        metaDesc: true,
+        content: true
       },
       orderBy: { createdAt: 'desc' },
       take: 5
@@ -399,7 +402,8 @@ export const getPostsByCategory = cache(async (slug: string, page: number = 1) =
           createdAt: true,
           category: true,
           author: true,
-          metaDesc: true
+          metaDesc: true,
+          content: true
         },
         orderBy: { publishedAt: 'desc' },
         take: limit,
@@ -432,6 +436,30 @@ export const getAds = async () => {
     })
     return ads
   }, 60)
+}
+
+export const searchPosts = async (query: string) => {
+  if (!query || query.length < 2) return []
+  
+  return await prisma.post.findMany({
+    where: {
+      published: true,
+      OR: [
+        { title: { contains: query, mode: 'insensitive' } },
+        { metaDesc: { contains: query, mode: 'insensitive' } },
+      ]
+    },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      featuredImage: true,
+      publishedAt: true,
+      category: { select: { name: true } }
+    },
+    take: 8,
+    orderBy: { publishedAt: 'desc' }
+  })
 }
 
 export async function createAd(formData: FormData) {
@@ -553,9 +581,9 @@ export async function updatePost(id: number, formData: FormData) {
 
   // Invalidate cache
   for (let i = 1; i <= 5; i++) {
-    await redis.del(`home_page_v2:p${i}`)
+    await redis.del(`home_page_v3:p${i}`)
   }
-  await redis.del('popular_posts_v2')
+  await redis.del('popular_posts_v3')
   await redis.del('dashboard_data')
   await redis.del('admin_posts:p1:l10')
   await redis.del(`post:${post.slug}`)
@@ -583,9 +611,9 @@ export async function deletePost(id: number) {
 
   // Invalidate cache
   for (let i = 1; i <= 5; i++) {
-    await redis.del(`home_page_v2:p${i}`)
+    await redis.del(`home_page_v3:p${i}`)
   }
-  await redis.del('popular_posts_v2')
+  await redis.del('popular_posts_v3')
   await redis.del('dashboard_data')
   await redis.del('admin_posts:p1:l10')
   await redis.del(`post:${post.slug}`)
@@ -617,9 +645,9 @@ export async function publishPostNow(id: number) {
 
   // Invalidate cache
   for (let i = 1; i <= 5; i++) {
-    await redis.del(`home_page_v2:p${i}`)
+    await redis.del(`home_page_v3:p${i}`)
   }
-  await redis.del('popular_posts_v2')
+  await redis.del('popular_posts_v3')
   await redis.del('dashboard_data')
   await redis.del('admin_posts:p1:l10')
   await redis.del(`post:${post.slug}`)

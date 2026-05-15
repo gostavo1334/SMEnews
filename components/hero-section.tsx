@@ -31,7 +31,7 @@ export function HeroSection({ heroNews = [], gridNews = [] }: HeroSectionProps) 
   }
 
   return (
-    <section className="container mx-auto px-4 pt-2 pb-6">
+    <section className="container mx-auto px-4 pt-2 pb-2">
       <div className="flex flex-col lg:flex-row gap-4">
         {/* LEFT - CAROUSEL (Full width if no grid news) */}
         <div className={cn("w-full", gridNews.length > 0 ? "lg:w-1/2" : "lg:w-full")}>
@@ -63,11 +63,7 @@ export function HeroSection({ heroNews = [], gridNews = [] }: HeroSectionProps) 
                       <h2 className="text-2xl md:text-3xl font-medium leading-tight mb-2 line-clamp-2">
                         {news.title}
                       </h2>
-                      {getDesc(news) && (
-                        <p className="text-sm text-gray-200 line-clamp-2 mb-3 max-w-xl">
-                          {getDesc(news)}
-                        </p>
-                      )}
+
                       <div className="flex items-center gap-3 text-sm text-gray-300">
                         <div className="flex items-center gap-1.5">
                           <Clock className="size-3.5" />
@@ -101,7 +97,7 @@ export function HeroSection({ heroNews = [], gridNews = [] }: HeroSectionProps) 
                   <h3 className="text-sm md:text-base font-medium leading-snug line-clamp-2 mb-1">
                     {news.title}
                   </h3>
-                  {/* Removed description from grid cards per user request */}
+
                   <div className="flex items-center gap-2 text-[10px] text-gray-300">
                     <div className="flex items-center gap-1">
                       <Clock className="size-3" />

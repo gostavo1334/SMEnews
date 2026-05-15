@@ -1,16 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
-
-// Forcing fresh client to clear Vercel warm function cache
-const globalForPrisma = global as unknown as { prisma: any };
-globalForPrisma.prisma = undefined;
 
 const connectionString = `${process.env.DATABASE_URL}`;
 
 const pool = new pg.Pool({ 
   connectionString,
-  // Direct connection or pooler without pgbouncer is best for this adapter
   ssl: { rejectUnauthorized: false },
   max: 10,
   idleTimeoutMillis: 30000,
@@ -19,7 +14,23 @@ const pool = new pg.Pool({
 
 const adapter = new PrismaPg(pool);
 
-export const prisma = new PrismaClient({
-  adapter,
-  log: ["query"],
-});
+const globalForPrisma = global as unknown as { prisma: PrismaClient | undefined };
+
+function createClient() {
+  const client = new PrismaClient({
+    adapter,
+    log: ["query"],
+  });
+  console.log("DEBUG: Prisma initialized with models:", Object.keys(client).filter(k => !k.startsWith('_')));
+  return client;
+}
+
+export const prisma = globalForPrisma.prisma ?? createClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+// Force fresh client if models are missing (useful for dev HMR)
+export function getDb() {
+  if (prisma && (prisma as any).book) return prisma;
+  return createClient();
+}

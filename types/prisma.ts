@@ -36,7 +36,7 @@ export interface User {
   id: number
   name: string | null
   email: string | null
-  emailVerified: Date | string | null | any
+  emailVerified: Date | string | null
   image: string | null
 }
 
@@ -55,4 +55,12 @@ export interface Report {
     title: string
     slug: string
   }
+}
+
+export interface Book {
+  id: number
+  title: string
+  coverImage: string
+  fileUrl: string
+  createdAt: Date | string
 }

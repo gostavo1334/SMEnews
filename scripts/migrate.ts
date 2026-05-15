@@ -24,7 +24,7 @@ const newImageDir = path.join(__dirname, '../public/uploads/images');
 function makeSlug(text, id, isPost = false) {
     if (isPost) return `post-${id}`;
     if (!text) return `cat-${id}`;
-    let s = text.trim().replace(/[\s\/?&#%=\\"'.,:;()\[\]{}*+!]+|[\u200B-\u200D\uFEFF]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    const s = text.trim().replace(/[\s\/?&#%=\\"'.,:;()\[\]{}*+!]+|[\u200B-\u200D\uFEFF]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
     if (!s) return `cat-${id}`;
     return `${s}-${id}`;
 }
@@ -35,8 +35,8 @@ async function migrate() {
     }
 
     let currentTable = null;
-    let categoriesMap = {}; // oldId -> newId
-    let usersMap = {}; // oldAuthorName -> newId
+    const categoriesMap = {}; // oldId -> newId
+    const usersMap = {}; // oldAuthorName -> newId
 
     // Pre-cache users
     const dbUsers = await prisma.user.findMany();

@@ -21,6 +21,7 @@ export async function AdsSidebar({ position }: { position: 'sidebar_left' | 'sid
                   alt={ad.title} 
                   fill 
                   unoptimized
+                  priority
                   sizes="160px"
                   className="object-cover" 
                 />

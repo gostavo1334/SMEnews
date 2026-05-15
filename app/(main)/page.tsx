@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { HeroSectionSkeleton } from "@/components/hero-section-skeleton";
 import { NewsCard } from "@/components/news-card";
 import { Pagination } from "@/components/pagination";
+import { NewsTicker } from "@/components/news-ticker";
 import { getHomePageData, getAds } from "@/app/actions/post-actions";
 import { Advertisement, PostWithRelations } from '@/types/prisma'
 
@@ -44,9 +45,12 @@ async function MainContent({ page }: { page: number }) {
   return (
     <>
       {page === 1 && heroNews.length > 0 && (
-        <div className="lg:col-span-3">
-          <HeroSection heroNews={heroNews} gridNews={gridNews} />
-        </div>
+        <>
+          <div className="lg:col-span-3">
+            <HeroSection heroNews={heroNews} gridNews={gridNews} />
+            <NewsTicker posts={latestPosts.slice(0, 10)} />
+          </div>
+        </>
       )}
 
       <div className="lg:col-span-2 space-y-6">

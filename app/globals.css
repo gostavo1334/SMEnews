@@ -55,7 +55,8 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.30 0.11 264); /* #132e73 */
+  --primary: oklch(0.30 0.11 264);
+  /* #132e73 */
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.9 0.04 264);
   --secondary-foreground: oklch(0.20 0.06 264);
@@ -90,7 +91,8 @@
   --card-foreground: oklch(0.98 0.01 264);
   --popover: oklch(0.15 0.02 264);
   --popover-foreground: oklch(0.98 0.01 264);
-  --primary: oklch(0.30 0.11 264); /* #132e73 */
+  --primary: oklch(0.30 0.11 264);
+  /* #132e73 */
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.20 0.03 264);
   --secondary-foreground: oklch(0.98 0.01 264);
@@ -119,11 +121,11 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 transition-colors duration-500 ease-in-out;
   }
 
   body {
-    @apply bg-background text-foreground font-sans transition-colors duration-300 overflow-x-hidden;
+    @apply bg-background text-foreground font-sans transition-colors duration-500 ease-in-out overflow-x-hidden;
   }
 }
 
@@ -144,12 +146,10 @@
     left: -150%;
     width: 300%;
     height: 300%;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0) 40%,
-      rgba(255, 255, 255, 0.25) 50%,
-      rgba(255, 255, 255, 0) 60%
-    );
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0.25) 50%,
+        rgba(255, 255, 255, 0) 60%);
     transform: rotate(10deg);
     animation: shine-sweep 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     z-index: 20;
@@ -169,11 +169,12 @@
 }
 
 @keyframes shine-sweep {
-  0% { 
-    transform: translate(-50%, -50%) rotate(10deg); 
+  0% {
+    transform: translate(-50%, -50%) rotate(10deg);
   }
-  100% { 
-    transform: translate(50%, 50%) rotate(10deg); 
+
+  100% {
+    transform: translate(50%, 50%) rotate(10deg);
   }
 }
 
@@ -213,4 +214,12 @@
 .dark .ck.ck-button {
   color: var(--foreground) !important;
 }
-.no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

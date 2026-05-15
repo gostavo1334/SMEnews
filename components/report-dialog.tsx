@@ -125,7 +125,7 @@ export function ReportDialog({ postId, postTitle }: ReportDialogProps) {
             <div className="space-y-2 flex flex-col items-center min-h-[65px] justify-center">
               <div 
                 className="cf-turnstile" 
-                data-sitekey="1x00000000000000000000AA"
+                data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
                 data-callback="onTurnstileSuccess"
               />
               <input type="hidden" name="cf-turnstile-response" id="turnstile-token" />
@@ -134,7 +134,7 @@ export function ReportDialog({ postId, postTitle }: ReportDialogProps) {
           
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>បោះបង់</Button>
-            <Button type="submit" variant="destructive" disabled={loading || !captchaToken}>
+             <Button type="submit" variant="destructive" disabled={loading || !captchaToken}>
               {loading ? "កំពុងបញ្ជូន..." : "បញ្ជូនការរាយការណ៍"}
             </Button>
           </DialogFooter>

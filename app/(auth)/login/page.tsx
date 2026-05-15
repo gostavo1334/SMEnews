@@ -150,7 +150,6 @@ export default function LoginPage() {
                     className="border-border border rounded-md"
                     required
                   />
-
                 </motion.div>
 
                 {/* Turnstile Widget */}
@@ -160,7 +159,10 @@ export default function LoginPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.65, ease: 'easeOut' }}
                 >
-                  <div className="cf-turnstile" data-sitekey="1x00000000000000000000AA" />
+                  <div 
+                    className="cf-turnstile" 
+                    data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} 
+                  />
                 </motion.div>
 
                 {/* Continue Button */}

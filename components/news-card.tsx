@@ -37,7 +37,7 @@ export function NewsCard({ news, variant = 'large', className }: NewsCardProps) 
   if (variant === 'horizontal' || variant === 'small') {
     return (
       <Link href={newsHref} className={cn("block group", className)}>
-        <Card className="group cursor-pointer border border-border/40 bg-card p-2 rounded-md hover:border-primary/30 transition-all duration-300 dark:bg-white/[0.03] dark:border-white/10">
+        <Card className="group cursor-pointer border border-border/40 bg-card p-2 rounded-md hover:border-primary/50 dark:hover:border-primary/70 transition-all duration-300 dark:bg-white/[0.03] dark:border-white/10 hover:shadow-lg hover:shadow-primary/5 dark:hover:shadow-primary/10">
           <div className="flex gap-3">
             <div className="relative size-20 flex-shrink-0 rounded-md overflow-hidden">
               <Image
@@ -87,7 +87,7 @@ export function NewsCard({ news, variant = 'large', className }: NewsCardProps) 
 
   return (
     <Link href={newsHref} className={cn("block group h-full", className)}>
-      <Card className="overflow-hidden border border-border/40 bg-card cursor-pointer flex flex-col h-full rounded-md hover:border-primary/30 transition-all duration-300 p-0 py-0 dark:bg-white/[0.03] dark:border-white/10">
+      <Card className="overflow-hidden border border-border/40 bg-card cursor-pointer flex flex-col h-full rounded-md hover:border-primary/50 dark:hover:border-primary/70 transition-all duration-300 p-0 py-0 dark:bg-white/[0.03] dark:border-white/10 hover:shadow-lg hover:shadow-primary/5 dark:hover:shadow-primary/10">
         <div className="relative aspect-video overflow-hidden rounded-t-md">
           <Image
             src={news.image}

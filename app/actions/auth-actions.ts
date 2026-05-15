@@ -33,8 +33,6 @@ export async function login(formData: FormData) {
     }
   } catch (error) {
     console.error("[Login Turnstile Error]:", error);
-    // Continue if it's a network error during dev, or block for security? 
-    // Usually better to block.
   }
 
   const user = await prisma.user.findUnique({

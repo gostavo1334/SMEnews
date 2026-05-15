@@ -28,6 +28,12 @@ import { SponsorCube } from "@/components/sponsor-cube"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useTheme } from "next-themes"
 import { SearchAutocomplete } from "@/components/search-autocomplete"
+import { 
+  Accordion, 
+  AccordionContent, 
+  AccordionItem, 
+  AccordionTrigger 
+} from "@/components/ui/accordion"
 
 const navItems = [
   { title: "ទំព័រដើម", href: "/" },
@@ -147,34 +153,41 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
                   <SheetTitle className="text-primary font-bold">ប្រភេទព័ត៌មាន</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-100px)]">
-                  {dynamicNavItems.map((item) => (
-                    <div key={item.href} className="flex flex-col">
-                      <Link 
-                        href={item.href} 
-                        onClick={() => setOpen(false)}
-                        className={cn(
-                          "px-4 py-2 text-sm font-medium hover:bg-accent rounded-md transition-colors",
-                          item.items && "bg-muted/30 mb-1"
+                  <Accordion type="multiple" className="w-full">
+                    {dynamicNavItems.map((item) => (
+                      <div key={item.href}>
+                        {item.items ? (
+                          <AccordionItem value={item.href} className="border-none">
+                            <AccordionTrigger className="hover:bg-accent hover:no-underline rounded-md px-4 py-2 text-sm font-medium transition-colors">
+                              {item.title}
+                            </AccordionTrigger>
+                            <AccordionContent className="pb-0 pl-4">
+                              <div className="flex flex-col gap-1 border-l pl-2 mb-2 mt-1">
+                                {item.items.map((sub: any) => (
+                                  <Link
+                                    key={sub.href}
+                                    href={sub.href}
+                                    onClick={() => setOpen(false)}
+                                    className="px-4 py-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                                  >
+                                    {sub.title}
+                                  </Link>
+                                ))}
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        ) : (
+                          <Link 
+                            href={item.href} 
+                            onClick={() => setOpen(false)}
+                            className="flex px-4 py-2.5 text-sm font-medium hover:bg-accent rounded-md transition-colors"
+                          >
+                            {item.title}
+                          </Link>
                         )}
-                      >
-                        {item.title}
-                      </Link>
-                      {item.items && (
-                        <div className="flex flex-col ml-4 border-l pl-2 mb-2">
-                          {item.items.map((sub: any) => (
-                            <Link
-                              key={sub.href}
-                              href={sub.href}
-                              onClick={() => setOpen(false)}
-                              className="px-4 py-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              {sub.title}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    ))}
+                  </Accordion>
                 </div>
               </SheetContent>
             </Sheet>

@@ -22,107 +22,167 @@ export interface Comment {
   likes: number
   depth: number
 }
-
 interface ScrapeResult {
   success: boolean
   data?: Comment[]
   error?: string
 }
 
-export async function scrapeFacebookComments(postUrl: string): Promise<ScrapeResult> {
-  console.log(`[INVESTIGATED-SCRAPER] Target: ${postUrl}`)
+// Helper: Random delay to mimic human behavior
+const randomDelay = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1)) + min
 
-  let browser;
+export async function scrapeFacebookComments(postUrl: string): Promise<ScrapeResult> {
+  console.log(`[SCRAPER] Target: ${postUrl}`)
+  let browser
+
   try {
-    browser = await puppeteer.launch({ 
+    browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-notifications']
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-notifications',
+        '--disable-blink-features=AutomationControlled', // Avoid detection
+      ],
     })
-    
+
     const page = await browser.newPage()
     await page.setViewport({ width: 1280, height: 1600 })
-    
+
     // Set a realistic User-Agent
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-    
-    // Go to URL
-    await page.goto(postUrl.trim(), { waitUntil: 'networkidle2', timeout: 60000 })
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    )
 
-    // Wait for the modal/comments to settle
-    await new Promise(r => setTimeout(r, 6000))
+    // Load cookies if available (for authenticated sessions)
+    // Replace with your actual cookies if you have them
+    // const cookies = [...]; // Load from a file or database
+    // await page.setCookie(...cookies);
 
-    // Diagnostic screenshot
+    // Navigate to the post
+    await page.goto(postUrl.trim(), {
+      waitUntil: 'networkidle2',
+      timeout: 60000,
+    })
+
+    // --- FIX 1: Scroll to load all comments ---
+    await page.evaluate(() => {
+      window.scrollTo(0, 0)
+      let lastHeight = document.body.scrollHeight
+      while (true) {
+        window.scrollTo(0, document.body.scrollHeight)
+        // Wait for new content to load
+        new Promise((resolve) => setTimeout(resolve, 2000))
+        let newHeight = document.body.scrollHeight
+        if (newHeight === lastHeight) break
+        lastHeight = newHeight
+      }
+    })
+
+    // Random delay to avoid rate limiting
+    await page.waitForTimeout(randomDelay(1000, 3000))
+
+    // --- FIX 2: Take a debug screenshot ---
     const screenshot = await page.screenshot({ fullPage: true })
     const debugPath = join(process.cwd(), 'public', 'last-scrape-debug.png')
     writeFileSync(debugPath, screenshot)
 
-    // EXTRACTION WITH VERIFIED SELECTORS
+    // --- FIX 3: Extract all comments, likes, and user details ---
     const extractedData = await page.evaluate(() => {
-      const results: any[] = [];
-      
-      // Target the specific article structures or their wrappers
-      const articles = Array.from(document.querySelectorAll('div[role="article"]'));
-      
-      articles.forEach((article: any, index) => {
-        // 1. Author Link & Name (Verified Path: a[role="link"] span span)
-        const authorLink = article.querySelector('a[role="link"]');
-        const authorSpan = authorLink?.querySelector('span span');
-        const authorName = authorSpan?.innerText?.trim() || authorLink?.innerText?.trim() || "Anonymous";
-        
-        // 2. Content Extraction (Trailing text nodes or dir="auto")
-        // We look for the main text container within the article
-        const contentEl = article.querySelector('div[dir="auto"], span[dir="auto"]');
-        let content = contentEl?.innerText?.trim() || "";
+      const results: Comment[] = []
 
-        // 3. Sticker Filter (Verified aria-label check)
-        const isSticker = article.querySelector('div[role="button"][aria-label*="sticker"], i[style*="background-image"]');
-        if (isSticker) return;
+      // Target all comment containers (updated selector)
+      const commentElements = Array.from(
+        document.querySelectorAll('div[data-commentid], div[role="article"]')
+      )
 
-        // 4. Noise Filter (UI Fragments)
-        const lowerContent = content.toLowerCase();
-        if (!content || content.length < 2) return;
-        if (authorName === "Log In" || authorName === "User") return;
-        if (lowerContent.includes('log in') || lowerContent.includes('forgot account')) return;
+      commentElements.forEach((commentEl) => {
+        // Skip if it's not a comment (e.g., ads, login prompts)
+        if (!commentEl.textContent?.trim()) return
 
-        // 5. Unique ID & Map
+        // Extract author details
+        const authorLink = commentEl.querySelector(
+          'a[href*="/profile.php?id="], a[href*="facebook.com/"]'
+        )
+        const authorName = authorLink?.textContent?.trim() || 'Anonymous'
+        const profileUrl = authorLink?.href || ''
+
+        // Extract author avatar
+        const authorAvatar = commentEl.querySelector('img')?.src || ''
+
+        // Extract comment content
+        const contentEl = commentEl.querySelector(
+          'div[data-commentbody], div[dir="auto"], span[dir="auto"]'
+        )
+        const content = contentEl?.textContent?.trim() || ''
+
+        // Skip empty or noise content
+        if (!content || content.length < 2) return
+        if (authorName === 'Log In' || authorName === 'User') return
+        if (content.toLowerCase().includes('log in')) return
+
+        // Extract timestamp
+        const timestampEl = commentEl.querySelector('abbr[title], span[class*="timestamp"]')
+        const timestamp = timestampEl?.getAttribute('title') || 'Recently'
+
+        // Extract likes
+        const likesEl = commentEl.querySelector(
+          'span[class*="like"], a[aria-label*="reactions"]'
+        )
+        const likesText = likesEl?.textContent?.trim() || '0'
+        const likes = parseInt(likesText.replace(/\D/g, '')) || 0
+
+        // Extract depth (for nested replies)
+        const depth = commentEl.getAttribute('data-depth')
+          ? parseInt(commentEl.getAttribute('data-depth')!)
+          : 0
+
+        // Extract parent ID (for replies)
+        const parentId = commentEl.getAttribute('data-parent-id') || null
+
+        // Push to results
         results.push({
-          id: `fb_inv_${Date.now()}_${index}`,
-          parentId: null,
+          id: commentEl.getAttribute('data-commentid') || `fb_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          parentId,
           authorName,
-          profileUrl: authorLink?.href || "",
-          authorAvatar: article.querySelector('img')?.src || "",
+          profileUrl,
+          authorAvatar,
           content,
-          timestamp: "Recently",
-          likes: 0,
-          depth: 0
-        });
-      });
-      
-      return results;
-    });
+          timestamp,
+          likes,
+          depth,
+        })
+      })
+
+      return results
+    })
 
     await browser.close()
 
-    // Deduplicate and final check
-    const finalResults = extractedData.filter((item, index, self) => 
-      index === self.findIndex((t) => t.content === item.content)
-    );
+    // Deduplicate results
+    const finalResults = extractedData.filter(
+      (item, index, self) =>
+        index === self.findIndex((t) => t.content === item.content && t.authorName === item.authorName)
+    )
 
     if (finalResults.length === 0) {
-      return { success: false, error: "No comments detected with verified selectors. Check screenshot." }
+      return {
+        success: false,
+        error: 'No comments detected. Check the screenshot and selectors.',
+      }
     }
 
     return {
       success: true,
-      data: finalResults
+      data: finalResults,
     }
-
   } catch (error) {
-    console.error(`[INVESTIGATED-SCRAPER ERROR] ${error}`)
+    console.error(`[SCRAPER ERROR] ${error}`)
     if (browser) await browser.close()
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Investigation-based extraction failed"
+      error: error instanceof Error ? error.message : 'Scraping failed',
     }
   }
 }

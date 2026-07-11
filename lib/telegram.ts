@@ -52,7 +52,7 @@ export async function postToTelegram({
     return
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://smenews.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobileusernews.com'
   const postUrl = `${siteUrl}/news/${slug}`
 
   // Strip HTML from content to get plain text
@@ -70,7 +70,7 @@ export async function postToTelegram({
   if (authorName) metaLine += `  ✍️ ${escapeHtml(authorName)}`
   if (metaLine) captionParts.push(metaLine)
 
-  captionParts.push(`🔗 <a href="${postUrl}">អានបន្ថែម</a>\n🔗 <a href="https://www.facebook.com/smenewscambodia">SMENews Facebook</a>\n🔗 <a href="https://www.facebook.com/hkcarinspectioncambodia">HK Car Inspection</a>`)
+  captionParts.push(`🔗 <a href="${postUrl}">អានបន្ថែម</a>\n🔗 <a href="https://www.facebook.com/share/1KZUYcMbpf/?mibextid=wwXIfr">MobileUserNews</a>`)
 
   const caption = captionParts.join('\n\n')
 
@@ -117,8 +117,8 @@ function buildFooter(categoryName?: string, authorName?: string, postUrl?: strin
   if (categoryName) footer += `📂 ${escapeHtml(categoryName)}`
   if (authorName) footer += `  ✍️ ${escapeHtml(authorName)}`
   footer += `\n\n🔗 <a href="${postUrl}">អានបន្ថែម</a>`
-  footer += `\n🔗 <a href="https://www.facebook.com/smenewscambodia">SMENews Facebook</a>`
-  footer += `\n🔗 <a href="https://www.facebook.com/hkcarinspectioncambodia">HK Car Inspection</a>`
+  footer += `\n🔗 <a href="https://www.facebook.com/share/1KZUYcMbpf/?mibextid=wwXIfr">MobileUserNews</a>`
+  //footer += `\n🔗 <a href="https://www.facebook.com/hkcarinspectioncambodia">HK Car Inspection</a>`
   return footer
 }
 

@@ -20,7 +20,7 @@ export default async function MainLayout({
   const sponsorAds = ads.filter((ad: any) => ad.active && ad.position === 'sponsor_cube');
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-green-50 dark:bg-green-900 text-green-900 dark:text-gray-100">
       <SiteHeader topBannerAd={topBannerAd} sponsorAds={sponsorAds} categories={categories} />
       
       <div className="flex justify-center gap-4 px-4 max-w-[1600px] mx-auto pt-8 flex-grow w-full">

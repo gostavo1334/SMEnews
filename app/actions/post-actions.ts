@@ -56,12 +56,12 @@ export async function createPost(formData: FormData) {
   })
 
   // Invalidate cache
-  for (let i = 1; i <= 5; i++) {
-    await redis.del(`home_page_v3:p${i}`)
-  }
-  await redis.del('popular_posts_v3')
-  await redis.del('dashboard_data')
-  await redis.del('admin_posts:p1:l10')
+  //for (let i = 1; i <= 5; i++) {
+  //  await redis.del(`home_page_v3:p${i}`)
+  //}
+  //await redis.del('popular_posts_v3')
+  //await redis.del('dashboard_data')
+  //await redis.del('admin_posts:p1:l10')
   
   if (categoryId) {
     const category = await prisma.category.findUnique({ where: { id: categoryId } })

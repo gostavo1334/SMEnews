@@ -1,10 +1,17 @@
-import { PrismaClient } from "../prisma/client";
+import { PrismaClient } from "@/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 
-const connectionString = `${process.env.DATABASE_URL}`;
+// pg 8.x treats `sslmode=require` in the URL as `verify-full` and overrides any
+// `ssl: { rejectUnauthorized: false }` we pass to the pool. Supabase's pooler
+// presents a certificate chain that fails strict verification, so strip the
+// `sslmode` query param and let the pool's ssl config take effect.
+const rawUrl = `${process.env.DATABASE_URL}`;
+const connectionString = rawUrl
+  .replace(/[?&]sslmode=[^&]*/g, "")
+  .replace(/[?&]pgbouncer=[^&]*/g, "");
 
-const pool = new pg.Pool({ 
+const pool = new pg.Pool({
   connectionString,
   ssl: { rejectUnauthorized: false },
   max: 10,

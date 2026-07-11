@@ -65,7 +65,7 @@ export function AdminSidebar({ role }: { role: string }) {
       <SidebarHeader className="p-4">
         <Link href="/admin" className="flex items-center gap-2">
           <Image 
-            src="/Logo/logo.png" 
+            src="https://res.cloudinary.com/hmcpifvi/image/upload/v1783567568/images_liqxxw.png" 
             alt="SME News" 
             width={140} 
             height={40} 
@@ -80,8 +80,7 @@ export function AdminSidebar({ role }: { role: string }) {
           />
         </Link>
         <div className="group-data-[collapsible=icon]:hidden">
-          <p className="text-xs text-sidebar-foreground/70">SME News | Dashboard</p>
-          <p className="text-[10px] text-sidebar-foreground/40">v2.0</p>
+          <p className="text-xs text-sidebar-foreground/70">Dashboard</p>
         </div>
       </SidebarHeader>
 

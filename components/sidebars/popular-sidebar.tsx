@@ -66,7 +66,7 @@ export async function PopularSidebar() {
       <Suspense fallback={<div className="h-[250px] bg-muted animate-pulse rounded-md" />}>
         <AdBeforePopular />
       </Suspense>
-      <h2 className="text-xl font-bold border-b pb-2 mb-4">ព័ត៌មានពេញនិយម</h2>
+      <h2 className="text-xl font-bold border-b pb-2 mb-4">មានពេញនិយម</h2>
       <div className="space-y-3">
         {popular.map((p: PostWithRelations) => (
           <NewsCard 

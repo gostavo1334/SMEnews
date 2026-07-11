@@ -1,14 +1,17 @@
 require('dotenv').config();
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('./client');
 const { PrismaPg } = require('@prisma/adapter-pg');
 const pg = require('pg');
 const crypto = require('crypto');
 
-const connectionString = `${process.env.DATABASE_URL}`;
+const rawUrl = `${process.env.DATABASE_URL}`;
+const connectionString = rawUrl
+  .replace(/[?&]sslmode=[^&]*/g, "")
+  .replace(/[?&]pgbouncer=[^&]*/g, "");
 
-const pool = new pg.Pool({ 
+const pool = new pg.Pool({
   connectionString,
-  ssl: connectionString.includes('neon') ? { rejectUnauthorized: true } : undefined
+  ssl: { rejectUnauthorized: false },
 });
 const adapter = new PrismaPg(pool);
 

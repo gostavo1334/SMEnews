@@ -39,18 +39,19 @@ const navItems = [
   { title: "ទំព័រដើម", href: "/" },
   { 
     title: "អាជីវកម្មខ្នាតតូច-មធ្យម និងសិប្បកម្ម", 
-    href: "/sme",
+    href: "/business",
     items: [
       { title: "សហគ្រាសធុនតូច", href: "/sme/small", description: "ព័ត៌មានអំពីសហគ្រាសធុនតូច" },
       { title: "សហគ្រាសធុនមធ្យម", href: "/sme/medium", description: "ព័ត៌មានអំពីសហគ្រាសធុនមធ្យម" },
       { title: "សិប្បកម្ម", href: "/sme/crafts", description: "ព័ត៌មានអំពីសិប្បកម្មខ្មែរ" },
     ]
   },
-  { title: "នវានុវត្តន៍-បច្ចេកវិទ្យា", href: "/tech" },
-  { title: "សង្គមជាតិ-សេដ្ឋកិច្ច", href: "/society" },
-  { title: "ធនាគារ-ហិរញ្ញវត្ថុ", href: "/finance" },
-  { title: "ពាណិជ្ជកម្ម", href: "/commerce" },
-  { title: "គំនិតអាជីវកម្ម", href: "/ideas" },
+  { title: "នវានុវត្តន៍-បច្ចេកវិទ្យា", href: "/business" },
+  { title: "នវានុវត្តន៍-បច្ចេកវិទ្យា", href: "/technology" },
+  { title: "សង្គមជាតិ-សេដ្ឋកិច្ច", href: "/social-econo" },
+  { title: "ធនាគារ-ហិរញ្ញវត្ថុ", href: "/banking" },
+  { title: "ពាណិជ្ជកម្ម", href: "/Commerce" },
+  { title: "គំនិតអាជីវកម្ម", href: "/business-idea" },
   { title: "វីដេអូ", href: "/video" },
   { title: "ទាញយកឯកសារ", href: "/downloads" },
 ]
@@ -85,9 +86,9 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
 
   // Determine logo source
   const logoSrc = mounted && (theme === 'dark' || resolvedTheme === 'dark')
-    ? "/Logo/File-Slogan SME NEWS-Dark Mode.png"
-    : "/Logo/File-Slogan SME NEWS-01.png";
-
+    ? "https://res.cloudinary.com/hmcpifvi/image/upload/v1783567568/images_liqxxw.png"
+    : "https://res.cloudinary.com/hmcpifvi/image/upload/v1783567568/images_liqxxw.png";
+//https://res.cloudinary.com/hmcpifvi/image/upload/v1783567568/images_liqxxw.png
   return (
     <>
       {/* TOP BAR STONE */}
@@ -96,7 +97,7 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
           <div className="flex-shrink-0">
             <Link href="/">
               <div className="flex items-center gap-2">
-                <Image 
+                <Image
                   src={logoSrc} 
                   alt="SME NEWS" 
                   width={320} 

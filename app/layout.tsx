@@ -23,7 +23,7 @@ const kantumruyPro = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "SME NEWS - ព័ត៌មានអាជីវកម្មខ្នាតតូច និងមធ្យម",
+  title: "Django",
   description: "ប្រភពព័ត៌មានអាជីវកម្ម នវានុវត្តន៍ និងបច្ចេកវិទ្យាឈានមុខគេ",
 };
 

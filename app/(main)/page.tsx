@@ -12,12 +12,12 @@ import { Advertisement, PostWithRelations } from '@/types/prisma'
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: "SME NEWS - ព័ត៌មានអាជីវកម្ម និងសេដ្ឋកិច្ច",
+  title: "Djngo",
   description: "ប្រភពព័ត៌មានអាជីវកម្ម នវានុវត្តន៍ និងបច្គេកវិទ្យាឈានមុខគេនៅក្នុងប្រទេសកម្ពុជា",
   openGraph: {
-    title: "SME NEWS - ព័ត៌មានអាជីវកម្ម និងសេដ្ឋកិច្ច",
+    title: "Djngo",
     description: "ប្រភពព័ត៌មានអាជីវកម្ម នវានុវត្តន៍ និងបច្ចេកវិទ្យាឈានមុខគេនៅក្នុងប្រទេសកម្ពុជា",
-    images: ["/Logo/logo.png"],
+    images: ["/Logo/logo"],
   }
 };
 

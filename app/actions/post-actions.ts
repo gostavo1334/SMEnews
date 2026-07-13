@@ -266,6 +266,23 @@ export const getHomePageData = cache(async (page: number = 1) => {
   // We'll show the first 7 in the Hero and the first 6 in the List (overlapping).
   const take = page === 1 ? 13 : limit
   const skip = page === 1 ? 0 : (page - 1) * limit
+   const latestPosts = await prisma.post.findMany({
+    where: { published: true },
+    orderBy: { publishedAt: "desc" },
+    include: { category: true, author: true },
+    take: 10,
+    skip: (page - 1) * 10,
+  });
+
+  // Add "loy.auto" to the title or description of posts
+  const optimizedPosts = latestPosts.map((post) => ({
+    ...post,
+    title: `${post.title} | loy.auto`, // Append keyword to title
+    metaDesc: post.metaDesc
+      ? `${post.metaDesc} | loy.auto`
+      : "ព័ត៌មានថ្មីៗ | loy.auto", // Fallback description
+  }));
+
 
   return getCachedData(`home_page_v3:p${page}`, async () => {
     const [latestPosts, totalCount] = await Promise.all([
@@ -331,7 +348,7 @@ export const getHomePageData = cache(async (page: number = 1) => {
     console.log(`[getHomePageData] Page: ${page}, Take: ${take}, Skip: ${skip}, Total: ${totalCount}`)
 
     return { 
-      latestPosts, 
+      latestPosts: optimizedPosts, 
       pagination: {
         currentPage: page,
         totalPages: Math.ceil(totalCount / limit),

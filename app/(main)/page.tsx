@@ -11,14 +11,16 @@ import { Advertisement, PostWithRelations } from '@/types/prisma'
 
 export const revalidate = 0;
 
+
 export const metadata: Metadata = {
-  title: "Djngo",
-  description: "ប្រភពព័ត៌មានអាជីវកម្ម នវានុវត្តន៍ និងបច្គេកវិទ្យាឈានមុខគេនៅក្នុងប្រទេសកម្ពុជា",
+  title: "Djngo - loy.auto | ព័ត៌មានថ្មីៗ",
+  description: "Django - loy.auto | ព័ត៌មានថ្មីៗ",
   openGraph: {
-    title: "Djngo",
-    description: "ប្រភពព័ត៌មានអាជីវកម្ម នវានុវត្តន៍ និងបច្ចេកវិទ្យាឈានមុខគេនៅក្នុងប្រទេសកម្ពុជា",
-    images: ["/Logo/logo"],
+    title: "Djngo - loy.auto",
+    description: "ប្រភពព័ត៌មានអាជីវកម្ម នវានុវត្តន៍ | loy.auto",
+    images: [{ url: "/Logo/logo", alt: "Djngo - loy.auto" }],
   }
+  
 };
 
 async function AdBeforePagination() {
@@ -41,6 +43,7 @@ async function MainContent({ page }: { page: number }) {
   const heroNews = page === 1 ? latestPosts.slice(0, 3) : [];
   const gridNews = page === 1 ? latestPosts.slice(3, 7) : [];
   const listPosts = page === 1 ? latestPosts.slice(0, 6) : latestPosts;
+  
 
   return (
     <>
@@ -95,6 +98,7 @@ async function MainContent({ page }: { page: number }) {
     </>
   );
 }
+
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const params = await searchParams

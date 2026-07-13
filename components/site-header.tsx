@@ -154,7 +154,7 @@ export function SiteHeader({ topBannerAd, sponsorAds = [], categories = [] }: { 
                   <SheetTitle className="text-primary font-bold">ប្រភេទព័ត៌មាន</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-100px)]">
-                  <Accordion type="multiple" className="w-full">
+                  <Accordion multiple className="w-full">
                     {dynamicNavItems.map((item) => (
                       <div key={item.href}>
                         {item.items ? (

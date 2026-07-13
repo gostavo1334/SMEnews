@@ -11,22 +11,7 @@ import { writeFileSync } from 'fs'
  * Specifically targets the logged-out modal view structure.
  */
 
-export interface Comment {
-  id: string
-  parentId: string | null
-  authorName: string
-  profileUrl: string
-  authorAvatar: string
-  content: string
-  timestamp: string
-  likes: number
-  depth: number
-}
-interface ScrapeResult {
-  success: boolean
-  data?: Comment[]
-  error?: string
-}
+
 export interface Comment {
   id: string
   parentId: string | null
@@ -122,11 +107,11 @@ export async function scrapeFacebookComments(
       commentElements.forEach((commentEl) => {
         if (!commentEl.textContent?.trim()) return;
 
-        const authorLink = commentEl.querySelector(
-          'a[href*="/profile.php?id="], a[href*="facebook.com/"]'
-        );
+      const authorLink = commentEl.querySelector(
+  'a[href*="/profile.php?id="], a[href*="facebook.com/"]'
+) as HTMLAnchorElement | null;
         const authorName = authorLink?.textContent?.trim() || 'Anonymous';
-        //const profileUrl = authorLink?.href || '';
+        const profileUrl = authorLink?.href || '';
         const authorAvatar = commentEl.querySelector('img')?.src || '';
         const contentEl = commentEl.querySelector(
           'div[data-commentbody], div[dir="auto"], span[dir="auto"]'

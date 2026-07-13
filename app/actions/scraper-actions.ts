@@ -126,7 +126,7 @@ export async function scrapeFacebookComments(
           'a[href*="/profile.php?id="], a[href*="facebook.com/"]'
         );
         const authorName = authorLink?.textContent?.trim() || 'Anonymous';
-        const profileUrl = authorLink?.href || '';
+        //const profileUrl = authorLink?.href || '';
         const authorAvatar = commentEl.querySelector('img')?.src || '';
         const contentEl = commentEl.querySelector(
           'div[data-commentbody], div[dir="auto"], span[dir="auto"]'

@@ -4,6 +4,7 @@ import { getAds } from "@/app/actions/post-actions";
 import { getCategories } from "@/app/actions/category-actions";
 import { Suspense } from "react";
 import { AdsSidebar } from "@/components/sidebars/ads-sidebar";
+import { Analytics } from "@vercel/analytics/next"
 import { PopularSidebar } from "@/components/sidebars/popular-sidebar";
 
 export default async function MainLayout({
@@ -36,6 +37,9 @@ export default async function MainLayout({
             <div className="lg:col-span-2 grid grid-cols-1 lg:grid-cols-2 lg:contents">
               {children}
             </div>
+            
+                  <Analytics />
+
 
             {/* STATIC SIDEBAR - NO RELOAD */}
             <aside className="lg:col-span-1">

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "Django - loy.auto | ព័ត៌មានថ្មីៗ",
   openGraph: {
     title: "Djngo - loy.auto",
-    description: "ប្រភពព័ត៌មានវានុវត្តន៍ | loy.auto",
+    description: "ប្រភពព័ត៌មានវានុវត្តន៍ loy | loy.auto",
     images: [{ url: "/Logo/logo", alt: "Djngo - loy.auto" }],
   }
   

@@ -35,8 +35,8 @@ export default function LoginPage() {
 
   // Determine logo source
   const logoSrc = mounted && (theme === 'dark' || resolvedTheme === 'dark')
-    ? "/Logo/File-Slogan SME NEWS-Dark Mode.png"
-    : "/Logo/File-Slogan SME NEWS-01.png";
+    ? "https://res.cloudinary.com/hmcpifvi/image/upload/v1783567568/images_liqxxw.png"
+    : "https://res.cloudinary.com/hmcpifvi/image/upload/v1783567568/images_liqxxw.png";
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

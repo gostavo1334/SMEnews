@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Djngo - loy.auto",
     description: "ប្រភពព័ត៌មានវានុវត្តន៍ loy | loy.auto",
-    images: [{ url: "/Logo/logo", alt: "Djngo - loy.auto" }],
+    images: [{ url: "https://res.cloudinary.com/hmcpifvi/image/upload/v1783567568/images_liqxxw.png", alt: "Djngo - loy.auto" }],
   }
   
 };

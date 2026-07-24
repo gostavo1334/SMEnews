@@ -1,0 +1,2 @@
+Domain: loy.autos
+Token: 05b77b7a083de4593ee667313f0e741754a86f3c19eda62ad2bdf1df9dade0ce
